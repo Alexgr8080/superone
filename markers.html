@@ -1,0 +1,109 @@
+<!-- markers.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markers Dashboard | Academic Supervision System</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Add any additional CSS files -->
+</head>
+<body>
+    <header>
+        <nav class="main-nav">
+            <div class="logo">Academic Supervision System</div>
+            <div class="user-info">
+                <span id="portal-type">Marker Portal</span>
+                <div class="user-details">
+                    <span id="user-name">Loading...</span>
+                    <div class="avatar" id="user-avatar"></div>
+                </div>
+                <div class="notifications">
+                    <span class="badge" id="notification-count">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="dashboard-container">
+        <section class="overview-section">
+            <h2>Marker Overview</h2>
+            <div class="academic-year">Academic Year: 2024-2025</div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>Total Assignments</h3>
+                    <div class="stat-value total-assignments-count">--</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Marking</h3>
+                    <div class="stat-value pending-marking-count">--</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Completed</h3>
+                    <div class="stat-value completed-marking-count">--</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="filters-section">
+            <h2>Filters</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="in_progress">In Progress</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+            </div>
+        </section>
+        
+        <section id="assignments-section" class="assignments-section">
+            <h3>My Assignments</h3>
+            <div class="loading-message">Loading assignments...</div>
+        </section>
+        
+        <section id="moderation-section" class="moderation-section">
+            <h3>Submissions to Moderate</h3>
+            <div class="loading-message">Loading moderation list...</div>
+        </section>
+        
+        <section id="feedback-templates-section" class="feedback-templates-section">
+            <h3>Feedback Templates</h3>
+            <p>Create reusable feedback templates to speed up the marking process.</p>
+            <div class="loading-message">Loading templates...</div>
+        </section>
+        
+        <section id="profile-section" class="profile-section">
+            <h3>My Profile</h3>
+            <form id="profile-form" class="profile-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" name="department">
+                </div>
+                <div class="form-group">
+                    <label for="expertise">Areas of Expertise</label>
+                    <input type="text" id="expertise" name="expertise" placeholder="Separate with commas">
+                    <small>E.g., Machine Learning, Database Systems, Human-Computer Interaction</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 Academic Supervision System</p>
+    </footer>
+    
+    <!-- Load JavaScript files -->
+    <script src="/js/supabaseClient.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/markers.js"></script>
+</body>
+</html>

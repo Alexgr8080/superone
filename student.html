@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <!-- Tailwind CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <!-- Custom styles -->
+    <style>
+        .dashboard-card {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .progress-bar {
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            height: 0.75rem;
+            overflow: hidden;
+            width: 100%;
+        }
+        .progress-bar-fill {
+            background-color: #4f46e5;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .status-badge {
+            display: inline-block;
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-on-track {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-behind {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-attention {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .status-completed {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .loading {
+            opacity: 0.6;
+        }
+        #errorMessage {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Top navigation -->
+    <nav class="bg-indigo-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold">Student Supervision System</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="flex items-center text-white">
+                                <span class="mr-2" id="user-name-display">Loading...</span>
+                                <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white" id="user-avatar">
+                                    <span id="user-initials">--</span>
+                                </div>
+                            </button>
+                        </div>
+                        <a href="#" id="logout-btn" class="text-white hover:text-indigo-200">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Error message area -->
+    <div id="errorMessage" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 mx-4 mt-4">
+        <p class="font-bold">Error</p>
+        <p id="errorMessageText">An error occurred. Please try again later.</p>
+    </div>
+
+    <!-- Main content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h1 id="page-title" class="text-3xl font-bold text-gray-900 mb-6">Student Dashboard</h1>
+        
+        <!-- Project status section -->
+        <div class="dashboard-card">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Project Status</h2>
+            <div class="flex flex-wrap">
+                <div class="w-full md:w-2/3 pr-0 md:pr-6">
+                    <div class="mb-4">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-gray-700 font-medium">Current Stage:</span>
+                            <span class="text-indigo-700 font-medium" id="project-stage-summary">Loading...</span>
+                        </div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-gray-700 font-medium">Next Deadline:</span>
+                            <span class="text-indigo-700 font-medium" id="next-deadline-summary">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-gray-700 font-medium">Progress:</span>
+                            <span id="progress-percentage">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 mt-4 md:mt-0">
+                    <div class="flex flex-col h-full justify-center items-center">
+                        <div class="text-center mb-2">
+                            <span class="status-badge status-on-track" id="project-status-badge">Loading...</span>
+                        </div>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View Project Timeline</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Two-column layout for main content -->
+        <div class="flex flex-wrap -mx-4">
+            <!-- Left column -->
+            <div class="w-full lg:w-2/3 px-4">
+                <!-- My Project Details section -->
+                <div class="dashboard-card">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">My Project Details</h2>
+                    <div id="project-details-container" class="loading">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Project Title</h3>
+                            <p id="project-title-display" class="text-gray-900">Loading...</p>
+                        </div>
+                        <div class="mb-4">
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Description</h3>
+                            <p id="project-description-display" class="text-gray-900">Loading...</p>
+                        </div>
+                        <div class="mb-4">
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Research Area</h3>
+                            <p id="project-research-area-display" class="text-gray-900">Loading...</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Key Milestones</h3>
+                            <ul id="project-milestones-list" class="list-disc pl-5 text-gray-900">
+                                <li>Loading milestones...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- My Submissions section -->
+                <div class="dashboard-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800">My Submissions</h2>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">New Submission</a>
+                    </div>
+                    <div id="submissions-container" class="loading">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="submissions-table-body">
+                                <tr>
+                                    <td class="px-4 py-4" colspan="5">Loading submissions...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Meetings section -->
+                <div class="dashboard-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800">Meetings</h2>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">Schedule Meeting</a>
+                    </div>
+                    <div id="meetings-container" class="loading">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="meetings-table-body">
+                                <tr>
+                                    <td class="px-4 py-4" colspan="5">Loading meetings...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right column -->
+            <div class="w-full lg:w-1/3 px-4">
+                <!-- My Supervisor section -->
+                <div class="dashboard-card">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">My Supervisor</h2>
+                    <div id="supervisor-container" class="loading">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-2xl font-bold mr-4" id="supervisor-avatar">
+                                <span id="supervisor-initials">--</span>
+                            </div>
+                            <div>
+                                <h3 id="supervisor-name" class="text-lg font-medium text-gray-900">Loading...</h3>
+                                <p id="supervisor-department" class="text-gray-600">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-envelope text-gray-500 w-5 mr-2"></i>
+                                <span id="supervisor-email" class="text-gray-900">Loading...</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-phone text-gray-500 w-5 mr-2"></i>
+                                <span id="supervisor-phone" class="text-gray-900">Loading...</span>
+                            </div>
+                        </div>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">Contact Supervisor</a>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Meeting section -->
+                <div class="dashboard-card">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Upcoming Meeting</h2>
+                    <div id="upcoming-meeting-container" class="loading">
+                        <div id="no-upcoming-meetings" class="hidden text-gray-500">
+                            No upcoming meetings scheduled.
+                        </div>
+                        <div id="upcoming-meeting-details">
+                            <div class="mb-4">
+                                <span class="block text-sm font-medium text-gray-500">Date & Time</span>
+                                <span id="upcoming-meeting-datetime" class="text-lg font-medium text-gray-900">Loading...</span>
+                            </div>
+                            <div class="mb-4">
+                                <span class="block text-sm font-medium text-gray-500">Title</span>
+                                <span id="upcoming-meeting-title" class="text-gray-900">Loading...</span>
+                            </div>
+                            <div class="mb-4">
+                                <span class="block text-sm font-medium text-gray-500">Type</span>
+                                <span id="upcoming-meeting-type" class="text-gray-900">Loading...</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <a href="#" class="px-3 py-1 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700">Join Meeting</a>
+                                <a href="#" class="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded hover:bg-gray-300">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notifications section -->
+                <div class="dashboard-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800">Notifications</h2>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">View All</a>
+                    </div>
+                    <div id="notifications-container" class="loading">
+                        <ul id="notifications-list" class="divide-y divide-gray-200">
+                            <li class="py-3">Loading notifications...</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- My Profile section -->
+                <div class="dashboard-card">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">My Profile</h2>
+                    <div id="profile-container" class="loading">
+                        <div class="mb-4">
+                            <span class="block text-sm font-medium text-gray-500">Student ID</span>
+                            <span id="profile-student-id" class="text-gray-900">Loading...</span>
+                        </div>
+                        <div class="mb-4">
+                            <span class="block text-sm font-medium text-gray-500">Program</span>
+                            <span id="profile-program" class="text-gray-900">Loading...</span>
+                        </div>
+                        <div class="mb-4">
+                            <span class="block text-sm font-medium text-gray-500">Department</span>
+                            <span id="profile-department" class="text-gray-900">Loading...</span>
+                        </div>
+                        <div class="mb-4">
+                            <span class="block text-sm font-medium text-gray-500">Year of Study</span>
+                            <span id="profile-year" class="text-gray-900">Loading...</span>
+                        </div>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-white py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div class="text-gray-500 text-sm">
+                    &copy; 2024 Student Supervision System
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-500 hover:text-gray-700 text-sm">Help</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-700 text-sm">Privacy Policy</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-700 text-sm">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS - Proper loading order -->
+    <!-- 1. First: Load third-party libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- 2. Load utility scripts -->
+    <script src="script.js"></script>
+    
+    <!-- 3. Load Supabase client -->
+    <script>
+    // Inline supabaseClient to ensure it's properly initialized
+    // Global variables for Supabase configuration, ensure they are defined only once
+    if (typeof window.SUPABASE_URL === 'undefined') {
+        window.SUPABASE_URL = 'https://clfnsthhfrjwqbeokckl.supabase.co';
+    }
+    if (typeof window.SUPABASE_ANON_KEY === 'undefined') {
+        window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsZm5zdGhoZnJqd3FiZW9rY2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwMjM1MzYsImV4cCI6MjA2MjU5OTUzNn0.012pMCsog50ci3LZognLkugYE-cci1rPXV0ThbKXnGI';
+    }
+
+    // Global Supabase client instance
+    window.supabaseClientGlobalInstance = null;
+    window.connectionVerifiedGlobal = false;
+
+    /** 
+     * Initialize and return a Supabase client instance 
+     * @returns {Object|null} Supabase client instance or null if initialization failed
+     */
+    function getSupabaseClient() {
+        console.log('Initializing Supabase client...');
+        
+        // Return existing instance if already initialized
+        if (window.supabaseClientGlobalInstance && window.connectionVerifiedGlobal) {
+            return window.supabaseClientGlobalInstance;
+        }
+        
+        return new Promise((resolve, reject) => {
+            try {
+                // Check if the Supabase library is loaded
+                if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+                    throw new Error('Supabase JS library not loaded or createClient function is missing.');
+                }
+                
+                // Create client
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                console.log('Supabase client created, testing connection...');
+                
+                // Test the connection
+                client.auth.getSession()
+                    .then(() => {
+                        window.supabaseClientGlobalInstance = client;
+                        window.connectionVerifiedGlobal = true;
+                        console.log('Supabase client initialized and connection verified');
+                        resolve(client);
+                    })
+                    .catch(error => {
+                        console.error('Failed to verify Supabase connection:', error);
+                        reject(error);
+                    });
+            } catch (error) {
+                console.error('Failed to initialize Supabase client:', error);
+                reject(error);
+            }
+        });
+    }
+
+    // Make the function available globally
+    window.getSupabaseClient = getSupabaseClient;
+
+    console.log('supabaseClient.js loaded and getSupabaseClient is available on window object.');
+    </script>
+
+    <!-- 4. Initialize auth and events -->
+    <script>
+    // Define global auth module events if not already defined
+    window.AuthModuleEventsGlobal = {
+        AUTH_MODULE_READY: 'authModuleReady',
+        AUTH_STATE_CHANGED: 'authStateChanged',
+        AUTH_ERROR: 'authModuleError'
+    };
+
+    // Guard to ensure this module's core setup runs only once
+    if (typeof window.authModuleInitializedGlobal === 'undefined') {
+        window.authModuleInitializedGlobal = false;
+        window.authInitializingGlobal = false;
+        window.authCurrentUserGlobal = null;
+        window.authUserOrganizationDataGlobal = null;
+        window.authStateChangeListenersGlobal = new Set();
+    }
+
+    /** 
+     * Initializes the authentication module, sets up Supabase auth listeners 
+     * @returns {Promise<Object>} User and organization data 
+     */
+    async function initializeAuthModule() {
+        if (window.authModuleInitializedGlobal) {
+            return { 
+                user: window.authCurrentUserGlobal, 
+                organization: window.authUserOrganizationDataGlobal 
+            };
+        }
+
+        if (window.authInitializingGlobal) {
+            return new Promise((resolve, reject) => {
+                const listener = (event) => {
+                    window.removeEventListener(window.AuthModuleEventsGlobal.AUTH_MODULE_READY, listener);
+                    resolve({ 
+                        user: window.authCurrentUserGlobal, 
+                        organization: window.authUserOrganizationDataGlobal 
+                    });
+                };
+                window.addEventListener(window.AuthModuleEventsGlobal.AUTH_MODULE_READY, listener);
+            });
+        }
+
+        window.authInitializingGlobal = true;
+
+        try {
+            // Get Supabase client
+            const supabaseClient = await getSupabaseClient();
+            
+            // Set up auth change listener
+            setupAuthChangeListener(supabaseClient);
+            
+            // Get current session
+            const { data: { user }, error } = await supabaseClient.auth.getUser();
+            
+            if (error) {
+                throw error;
+            }
+            
+            // Set global user
+            window.authCurrentUserGlobal = user;
+            
+            // Get organization data if user exists
+            if (user) {
+                const orgData = await fetchUserOrganizationData(supabaseClient, user.id);
+                window.authUserOrganizationDataGlobal = orgData;
+            }
+            
+            window.authModuleInitializedGlobal = true;
+            window.authInitializingGlobal = false;
+            
+            // Dispatch event
+            dispatchAuthEvent(window.AuthModuleEventsGlobal.AUTH_MODULE_READY, {
+                user,
+                organization: window.authUserOrganizationDataGlobal
+            });
+            
+            return { 
+                user, 
+                organization: window.authUserOrganizationDataGlobal 
+            };
+        } catch (error) {
+            window.authInitializingGlobal = false;
+            console.error('Failed to initialize auth module:', error);
+            
+            // Dispatch error event
+            dispatchAuthEvent(window.AuthModuleEventsGlobal.AUTH_ERROR, { 
+                error: error.message || 'Authentication initialization failed' 
+            });
+            
+            throw error;
+        }
+    }
+
+    /**
+     * Sets up auth state change listener
+     * @param {Object} supabaseClient - Initialized Supabase client
+     */
+    function setupAuthChangeListener(supabaseClient) {
+        if (!supabaseClient || !supabaseClient.auth || typeof supabaseClient.auth.onAuthStateChange !== 'function') {
+            console.error('Invalid Supabase client provided for auth state listener');
+            return false;
+        }
+        
+        const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(
+            async (event, session) => {
+                console.log('Auth state changed:', event);
+                
+                if (event === 'SIGNED_IN' && session) {
+                    // Update global user
+                    window.authCurrentUserGlobal = session.user;
+                    
+                    // Get organization data
+                    const orgData = await fetchUserOrganizationData(supabaseClient, session.user.id);
+                    window.authUserOrganizationDataGlobal = orgData;
+                    
+                    // Dispatch event
+                    dispatchAuthEvent(window.AuthModuleEventsGlobal.AUTH_STATE_CHANGED, {
+                        event,
+                        user: session.user,
+                        organization: orgData
+                    });
+                } 
+                else if (event === 'SIGNED_OUT') {
+                    // Clear user data
+                    window.authCurrentUserGlobal = null;
+                    window.authUserOrganizationDataGlobal = null;
+                    
+                    // Dispatch event
+                    dispatchAuthEvent(window.AuthModuleEventsGlobal.AUTH_STATE_CHANGED, {
+                        event,
+                        user: null,
+                        organization: null
+                    });
+                }
+                else {
+                    // For other events, dispatch with current state
+                    dispatchAuthEvent(window.AuthModuleEventsGlobal.AUTH_STATE_CHANGED, {
+                        event,
+                        user: window.authCurrentUserGlobal,
+                        organization: window.authUserOrganizationDataGlobal
+                    });
+                }
+            });
+            
+        return true;
+    }
+
+    /**
+     * Fetches user's organization data
+     * @param {Object} supabaseClient - Initialized Supabase client
+     * @param {string} userId - User ID to fetch organization data for
+     * @returns {Promise<Object>} Organization data
+     */
+    async function fetchUserOrganizationData(supabaseClient, userId) {
+        try {
+            if (!userId) return null;
+            
+            // Get user roles
+            const { data: userRoles, error: rolesError } = await supabaseClient
+                .from('user_roles')
+                .select('role_id, roles(id, name)')
+                .eq('user_id', userId);
+                
+            if (rolesError) throw rolesError;
+            
+            // Get user organization
+            const { data: orgData, error: orgError } = await supabaseClient
+                .from('user_organizations')
+                .select('organization_id, organizations(id, name)')
+                .eq('user_id', userId)
+                .single();
+                
+            if (orgError && orgError.code !== 'PGRST116') throw orgError; // Ignore "not found" for organization
+            
+            // Format data
+            const roles = userRoles ? userRoles.map(ur => ({
+                id: ur.role_id,
+                name: ur.roles?.name || 'Unknown Role'
+            })) : [];
+            
+            const organization = orgData ? {
+                id: orgData.organization_id,
+                name: orgData.organizations?.name || 'Unknown Organization'
+            } : null;
+            
+            return { roles, organization };
+        } catch (error) {
+            console.error('Failed to fetch user organization data:', error);
+            return { roles: [], organization: null };
+        }
+    }
+
+    /**
+     * Dispatches auth event
+     * @param {string} eventName - Name of the event to dispatch
+     * @param {Object} data - Event data
+     */
+    function dispatchAuthEvent(eventName, data) {
+        // Create and dispatch event
+        const event = new CustomEvent(eventName, { detail: data });
+        window.dispatchEvent(event);
+        
+        // Call listeners directly
+        if (eventName === window.AuthModuleEventsGlobal.AUTH_STATE_CHANGED) {
+            window.authStateChangeListenersGlobal.forEach(listener => {
+                try {
+                    listener(data.event, data);
+                } catch (error) {
+                    console.error('Error in auth state change listener:', error);
+                }
+            });
+        }
+    }
+
+    // Initialize auth module with retry
+    function initializeWithRetry(maxRetries = 3, delay = 1000) {
+        console.log('DOM content loaded. Initializing auth module with retry...');
+        let retries = 0;
+        
+        function attempt() {
+            return initializeAuthModule()
+                .then(result => {
+                    console.log('Auth module initialized successfully via initializeWithRetry.');
+                    return result;
+                })
+                .catch(error => {
+                    if (retries < maxRetries) {
+                        retries++;
+                        console.warn(`Auth initialization failed, retrying (${retries}/${maxRetries})...`);
+                        return new Promise(resolve => setTimeout(() => resolve(attempt()), delay));
+                    }
+                    console.error('Failed to initialize auth after multiple attempts:', error);
+                    throw error;
+                });
+        }
+        
+        return attempt();
+    }
+
+    // Export auth API globally
+    window.auth = {
+        initialize: initializeWithRetry,
+        getCurrentUser: () => window.authCurrentUserGlobal,
+        onAuthStateChange: (callback) => {
+            if (typeof callback === 'function') {
+                window.authStateChangeListenersGlobal.add(callback);
+            }
+            return () => window.authStateChangeListenersGlobal.delete(callback);
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeWithRetry();
+    });
+
+    console.log('auth.js loaded and auth API is available on window.auth');
+    </script>
+
+    <!-- 5. Student dashboard initialization -->
+    <script>
+    // --- Student Dashboard State & Initialization ---
+    let studentSupabaseClient = null;
+    let studentCurrentUser = null;
+    let studentProfileData = null; // Stores the student's own profile data from 'students' table
+    let studentProjectData = null;
+    let studentSupervisorData = null;
+    let studentMeetingsData = [];
+    let studentSubmissionsData = [];
+    let studentNotificationsData = [];
+    let isStudentDashboardInitialized = false;
+
+    // DOM Element Cache
+    const StudentDOM = {
+        pageTitle: null,
+        userNameDisplay: null,
+        userAvatar: null,
+        userInitials: null,
+        projectTitleSummary: null,
+        projectStageSummary: null,
+        projectStatusBadge: null,
+        nextDeadlineSummary: null,
+        progressPercentage: null,
+        progressBarFill: null,
+        projectDetailsContainer: null,
+        projectTitleDisplay: null,
+        projectDescriptionDisplay: null,
+        projectResearchAreaDisplay: null,
+        projectMilestonesList: null,
+        supervisorContainer: null,
+        supervisorAvatar: null,
+        supervisorInitials: null,
+        supervisorName: null,
+        supervisorDepartment: null,
+        supervisorEmail: null,
+        supervisorPhone: null,
+        upcomingMeetingContainer: null,
+        noUpcomingMeetings: null,
+        upcomingMeetingDetails: null,
+        upcomingMeetingDatetime: null,
+        upcomingMeetingTitle: null,
+        upcomingMeetingType: null,
+        submissionsContainer: null,
+        submissionsTableBody: null,
+        meetingsContainer: null,
+        meetingsTableBody: null,
+        notificationsContainer: null,
+        notificationsList: null,
+        profileContainer: null,
+        profileStudentId: null,
+        profileProgram: null,
+        profileDepartment: null,
+        profileYear: null,
+        errorMessage: null,
+        errorMessageText: null,
+        logoutBtn: null
+    };
+
+    // Initialize student dashboard
+    async function initializeStudentDashboard() {
+        if (isStudentDashboardInitialized) {
+            return { success: true };
+        }
+        
+        try {
+            console.log('Initializing student dashboard...');
+            
+            // Initialize Supabase client
+            studentSupabaseClient = await getSupabaseClient();
+            if (!studentSupabaseClient) {
+                throw new Error('Failed to initialize Supabase client');
+            }
+            
+            // Get current user from auth module
+            const authData = await window.auth.initialize();
+            studentCurrentUser = authData.user;
+            
+            if (!studentCurrentUser) {
+                window.location.href = window.PathConfig?.LOGIN || '/login.html';
+                return { success: false, error: 'User not authenticated' };
+            }
+            
+            // Initialize DOM elements
+            initializeStudentDOMElements();
+            
+            // Load student data
+            await loadStudentData();
+            
+            // Update UI
+            updateStudentDashboardUI();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Set up real-time subscriptions
+            setupRealtimeSubscriptions();
+            
+            isStudentDashboardInitialized = true;
+            console.log('Student dashboard initialized successfully');
+            
+            return { success: true };
+            
+        } catch (error) {
+            console.error('Student dashboard initialization failed:', error);
+            showErrorMessage('Failed to initialize dashboard. Please refresh the page or contact support.');
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Initialize DOM elements
+    function initializeStudentDOMElements() {
+        const elements = {
+            'pageTitle': document.getElementById('page-title'),
+            'userNameDisplay': document.getElementById('user-name-display'),
+            'userAvatar': document.getElementById('user-avatar'),
+            'userInitials': document.getElementById('user-initials'),
+            'projectTitleSummary': document.getElementById('project-title-display'),
+            'projectStageSummary': document.getElementById('project-stage-summary'),
+            'projectStatusBadge': document.getElementById('project-status-badge'),
+            'nextDeadlineSummary': document.getElementById('next-deadline-summary'),
+            'progressPercentage': document.getElementById('progress-percentage'),
+            'progressBarFill': document.getElementById('progress-bar-fill'),
+            'projectDetailsContainer': document.getElementById('project-details-container'),
+            'projectTitleDisplay': document.getElementById('project-title-display'),
+            'projectDescriptionDisplay': document.getElementById('project-description-display'),
+            'projectResearchAreaDisplay': document.getElementById('project-research-area-display'),
+            'projectMilestonesList': document.getElementById('project-milestones-list'),
+            'supervisorContainer': document.getElementById('supervisor-container'),
+            'supervisorAvatar': document.getElementById('supervisor-avatar'),
+            'supervisorInitials': document.getElementById('supervisor-initials'),
+            'supervisorName': document.getElementById('supervisor-name'),
+            'supervisorDepartment': document.getElementById('supervisor-department'),
+            'supervisorEmail': document.getElementById('supervisor-email'),
+            'supervisorPhone': document.getElementById('supervisor-phone'),
+            'upcomingMeetingContainer': document.getElementById('upcoming-meeting-container'),
+            'noUpcomingMeetings': document.getElementById('no-upcoming-meetings'),
+            'upcomingMeetingDetails': document.getElementById('upcoming-meeting-details'),
+            'upcomingMeetingDatetime': document.getElementById('upcoming-meeting-datetime'),
+            'upcomingMeetingTitle': document.getElementById('upcoming-meeting-title'),
+            'upcomingMeetingType': document.getElementById('upcoming-meeting-type'),
+            'submissionsContainer': document.getElementById('submissions-container'),
+            'submissionsTableBody': document.getElementById('submissions-table-body'),
+            'meetingsContainer': document.getElementById('meetings-container'),
+            'meetingsTableBody': document.getElementById('meetings-table-body'),
+            'notificationsContainer': document.getElementById('notifications-container'),
+            'notificationsList': document.getElementById('notifications-list'),
+            'profileContainer': document.getElementById('profile-container'),
+            'profileStudentId': document.getElementById('profile-student-id'),
+            'profileProgram': document.getElementById('profile-program'),
+            'profileDepartment': document.getElementById('profile-department'),
+            'profileYear': document.getElementById('profile-year'),
+            'errorMessage': document.getElementById('errorMessage'),
+            'errorMessageText': document.getElementById('errorMessageText'),
+            'logoutBtn': document.getElementById('logout-btn')
+        };
+        
+        const missingElements = [];
+        
+        for (const [key, element] of Object.entries(elements)) {
+            if (!element) {
+                missingElements.push(key);
+            } else {
+                StudentDOM[key] = element;
+            }
+        }
+        
+        if (missingElements.length > 0) {
+            console.warn('Missing DOM elements:', missingElements);
+        }
+    }
+
+    // Load all student-related data
+    async function loadStudentData() {
+        try {
+            // Load student profile
+            await loadStudentProfile();
+            
+            // Load other data in parallel
+            await Promise.all([
+                loadProjectData(),
+                loadSupervisorData(),
+                loadMeetingsData(),
+                loadSubmissionsData(),
+                loadNotificationsData()
+            ]);
+            
+            return true;
+        } catch (error) {
+            console.error('Failed to load student data:', error);
+            throw error;
+        }
+    }
+
+    // Load student profile data
+    async function loadStudentProfile() {
+        try {
+            if (!studentCurrentUser || !studentCurrentUser.id) {
+                throw new Error('User ID is missing');
+            }
+            
+            const { data, error } = await studentSupabaseClient
+                .from('students')
+                .select('*')
+                .eq('user_id', studentCurrentUser.id)
+                .single();
+                
+            if (error) throw error;
+            
+            studentProfileData = data;
+            return data;
+            
+        } catch (error) {
+            console.error('Failed to load student profile:', error);
+            studentProfileData = {
+                id: 'unknown',
+                full_name: studentCurrentUser?.user_metadata?.full_name || 'Student',
+                student_id: 'Unknown',
+                department: 'Unknown',
+                program: 'Unknown',
+                year_of_study: 'Unknown',
+                avatar_url: null
+            };
+            
+            return studentProfileData;
+        }
+    }
+
+    // Load project data
+    async function loadProjectData() {
+        try {
+            if (!studentProfileData || !studentProfileData.id) {
+                throw new Error('Student profile is missing');
+            }
+            
+            const { data, error } = await studentSupabaseClient
+                .from('projects')
+                .select('*, milestones(*)')
+                .eq('student_id', studentProfileData.id)
+                .single();
+                
+            if (error && error.code !== 'PGRST116') throw error; // Ignore "not found"
+            
+            studentProjectData = data || {
+                id: null,
+                title: 'No Project Assigned',
+                description: 'No project has been assigned to you yet.',
+                research_area: 'N/A',
+                status: 'pending',
+                progress: 0,
+                current_stage: 'Not Started',
+                next_deadline: null,
+                milestones: []
+            };
+            
+            return studentProjectData;
+            
+        } catch (error) {
+            console.error('Failed to load project data:', error);
+            studentProjectData = {
+                title: 'Error Loading Project',
+                description: 'Could not load project details.',
+                research_area: 'Unknown',
+                status: 'unknown',
+                progress: 0,
+                current_stage: 'Unknown',
+                next_deadline: null,
+                milestones: []
+            };
+            
+            return studentProjectData;
+        }
+    }
+
+    // Load supervisor data
+    async function loadSupervisorData() {
+        try {
+            if (!studentProfileData || !studentProfileData.id) {
+                throw new Error('Student profile is missing');
+            }
+            
+            // Get supervisor assignment
+            const { data: assignment, error: assignmentError } = await studentSupabaseClient
+                .from('supervisor_assignments')
+                .select('supervisor_id')
+                .eq('student_id', studentProfileData.id)
+                .single();
+                
+            if (assignmentError && assignmentError.code !== 'PGRST116') throw assignmentError; // Ignore "not found"
+            
+            if (!assignment) {
+                studentSupervisorData = null;
+                return null;
+            }
+            
+            // Get supervisor details
+            const { data: supervisor, error: supervisorError } = await studentSupabaseClient
+                .from('supervisors')
+                .select('*, user:user_id(*)')
+                .eq('id', assignment.supervisor_id)
+                .single();
+                
+            if (supervisorError) throw supervisorError;
+            
+            studentSupervisorData = supervisor;
+            return supervisor;
+            
+        } catch (error) {
+            console.error('Failed to load supervisor data:', error);
+            studentSupervisorData = null;
+            return null;
+        }
+    }
+
+    // Load meetings data
+    async function loadMeetingsData() {
+        try {
+            if (!studentProfileData || !studentProfileData.id) {
+                throw new Error('Student profile is missing');
+            }
+            
+            const { data, error } = await studentSupabaseClient
+                .from('meetings')
+                .select('*')
+                .eq('student_id', studentProfileData.id)
+                .order('scheduled_time', { ascending: true });
+                
+            if (error) throw error;
+            
+            studentMeetingsData = data || [];
+            return studentMeetingsData;
+            
+        } catch (error) {
+            console.error('Failed to load meetings data:', error);
+            studentMeetingsData = [];
+            return [];
+        }
+    }
+
+    // Load submissions data
+    async function loadSubmissionsData() {
+        try {
+            if (!studentProfileData || !studentProfileData.id) {
+                throw new Error('Student profile is missing');
+            }
+            
+            const { data, error } = await studentSupabaseClient
+                .from('submissions')
+                .select('*')
+                .eq('student_id', studentProfileData.id)
+                .order('submitted_at', { ascending: false });
+                
+            if (error) throw error;
+            
+            studentSubmissionsData = data || [];
+            return studentSubmissionsData;
+            
+        } catch (error) {
+            console.error('Failed to load submissions data:', error);
+            studentSubmissionsData = [];
+            return [];
+        }
+    }
+
+    // Load notifications data
+    async function loadNotificationsData() {
+        try {
+            if (!studentCurrentUser || !studentCurrentUser.id) {
+                throw new Error('User ID is missing');
+            }
+            
+            const { data, error } = await studentSupabaseClient
+                .from('notifications')
+                .select('*')
+                .eq('user_id', studentCurrentUser.id)
+                .eq('is_read', false)
+                .order('created_at', { ascending: false })
+                .limit(5);
+                
+            if (error) throw error;
+            
+            studentNotificationsData = data || [];
+            return studentNotificationsData;
+            
+        } catch (error) {
+            console.error('Failed to load notifications data:', error);
+            studentNotificationsData = [];
+            return [];
+        }
+    }
+
+    // Update dashboard UI with loaded data
+    function updateStudentDashboardUI() {
+        try {
+            // Remove loading state from all containers
+            const loadingContainers = document.querySelectorAll('.loading');
+            loadingContainers.forEach(container => container.classList.remove('loading'));
+            
+            // Update user info
+            if (StudentDOM.userNameDisplay && studentCurrentUser) {
+                const displayName = studentCurrentUser.user_metadata?.full_name || 
+                                    studentProfileData?.full_name || 
+                                    'Student';
+                StudentDOM.userNameDisplay.textContent = displayName;
+            }
+            
+            if (StudentDOM.userInitials && studentCurrentUser) {
+                const fullName = studentCurrentUser.user_metadata?.full_name || 
+                                  studentProfileData?.full_name || 
+                                  'Student';
+                const initials = fullName.split(' ')
+                    .map(name => name[0])
+                    .slice(0, 2)
+                    .join('');
+                StudentDOM.userInitials.textContent = initials;
+            }
+            
+            // Update project info
+            if (studentProjectData) {
+                if (StudentDOM.projectTitleDisplay) {
+                    StudentDOM.projectTitleDisplay.textContent = studentProjectData.title;
+                }
+                
+                if (StudentDOM.projectDescriptionDisplay) {
+                    StudentDOM.projectDescriptionDisplay.textContent = studentProjectData.description;
+                }
+                
+                if (StudentDOM.projectResearchAreaDisplay) {
+                    StudentDOM.projectResearchAreaDisplay.textContent = studentProjectData.research_area;
+                }
+                
+                if (StudentDOM.projectStageSummary) {
+                    StudentDOM.projectStageSummary.textContent = studentProjectData.current_stage;
+                }
+                
+                if (StudentDOM.projectStatusBadge) {
+                    const status = studentProjectData.status || 'unknown';
+                    StudentDOM.projectStatusBadge.textContent = capitalizeFirstLetter(status);
+                    
+                    // Update status badge class
+                    StudentDOM.projectStatusBadge.className = 'status-badge';
+                    switch (status) {
+                        case 'on_track':
+                            StudentDOM.projectStatusBadge.classList.add('status-on-track');
+                            break;
+                        case 'behind':
+                            StudentDOM.projectStatusBadge.classList.add('status-behind');
+                            break;
+                        case 'attention':
+                            StudentDOM.projectStatusBadge.classList.add('status-attention');
+                            break;
+                        case 'completed':
+                            StudentDOM.projectStatusBadge.classList.add('status-completed');
+                            break;
+                        default:
+                            StudentDOM.projectStatusBadge.classList.add('bg-gray-100', 'text-gray-800');
+                    }
+                }
+                
+                if (StudentDOM.nextDeadlineSummary) {
+                    if (studentProjectData.next_deadline) {
+                        const deadline = new Date(studentProjectData.next_deadline);
+                        StudentDOM.nextDeadlineSummary.textContent = formatDate(deadline);
+                    } else {
+                        StudentDOM.nextDeadlineSummary.textContent = 'No upcoming deadline';
+                    }
+                }
+                
+                if (StudentDOM.progressPercentage && StudentDOM.progressBarFill) {
+                    const progress = parseInt(studentProjectData.progress) || 0;
+                    StudentDOM.progressPercentage.textContent = `${progress}% Complete`;
+                    StudentDOM.progressBarFill.style.width = `${progress}%`;
+                }
+                
+                if (StudentDOM.projectMilestonesList) {
+                    StudentDOM.projectMilestonesList.innerHTML = '';
+                    
+                    if (studentProjectData.milestones && studentProjectData.milestones.length > 0) {
+                        studentProjectData.milestones.forEach(milestone => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `
+                                <span class="font-medium">${milestone.title}</span>
+                                <span class="text-sm text-gray-500 ml-2">
+                                    Due: ${formatDate(new Date(milestone.due_date))}
+                                </span>
+                                <span class="ml-2 ${milestone.completed ? 'text-green-600' : 'text-yellow-600'}">
+                                    (${milestone.completed ? 'Completed' : 'Pending'})
+                                </span>
+                            `;
+                            StudentDOM.projectMilestonesList.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.textContent = 'No milestones defined yet.';
+                        StudentDOM.projectMilestonesList.appendChild(li);
+                    }
+                }
+            }
+            
+            // Update supervisor info
+            if (studentSupervisorData) {
+                if (StudentDOM.supervisorName) {
+                    StudentDOM.supervisorName.textContent = studentSupervisorData.full_name || 
+                                                           'No Supervisor Assigned';
+                }
+                
+                if (StudentDOM.supervisorDepartment) {
+                    StudentDOM.supervisorDepartment.textContent = studentSupervisorData.department || 'N/A';
+                }
+                
+                if (StudentDOM.supervisorEmail) {
+                    StudentDOM.supervisorEmail.textContent = studentSupervisorData.user?.email || 'N/A';
+                }
+                
+                if (StudentDOM.supervisorPhone) {
+                    StudentDOM.supervisorPhone.textContent = studentSupervisorData.phone || 'N/A';
+                }
+                
+                if (StudentDOM.supervisorInitials) {
+                    const fullName = studentSupervisorData.full_name || 'No Name';
+                    const initials = fullName.split(' ')
+                        .map(name => name[0])
+                        .slice(0, 2)
+                        .join('');
+                    StudentDOM.supervisorInitials.textContent = initials;
+                }
+            } else if (StudentDOM.supervisorName) {
+                StudentDOM.supervisorName.textContent = 'No Supervisor Assigned';
+                if (StudentDOM.supervisorInitials) {
+                    StudentDOM.supervisorInitials.textContent = '--';
+                }
+            }
+            
+            // Update meetings info
+            if (StudentDOM.meetingsTableBody) {
+                StudentDOM.meetingsTableBody.innerHTML = '';
+                
+                if (studentMeetingsData.length > 0) {
+                    studentMeetingsData.forEach(meeting => {
+                        const row = document.createElement('tr');
+                        const meetingDate = new Date(meeting.scheduled_time);
+                        const status = meeting.status || 'scheduled';
+                        
+                        row.innerHTML = `
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                ${formatDateTime(meetingDate)}
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${meeting.title || 'Untitled Meeting'}
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${meeting.meeting_type || 'General'}
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                <span class="status-badge ${getStatusBadgeClass(status)}">
+                                    ${capitalizeFirstLetter(status)}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+                            </td>
+                        `;
+                        
+                        StudentDOM.meetingsTableBody.appendChild(row);
+                    });
+                } else {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = `
+                        <td class="px-4 py-4 text-sm text-gray-500" colspan="5">
+                            No meetings scheduled.
+                        </td>
+                    `;
+                    StudentDOM.meetingsTableBody.appendChild(emptyRow);
+                }
+            }
+            
+            // Update upcoming meeting info
+            if (StudentDOM.upcomingMeetingContainer) {
+                const futureMeetings = studentMeetingsData
+                    .filter(meeting => {
+                        const meetingTime = new Date(meeting.scheduled_time);
+                        return meetingTime > new Date() && meeting.status !== 'cancelled';
+                    })
+                    .sort((a, b) => {
+                        return new Date(a.scheduled_time) - new Date(b.scheduled_time);
+                    });
+                
+                if (futureMeetings.length > 0) {
+                    const nextMeeting = futureMeetings[0];
+                    
+                    if (StudentDOM.upcomingMeetingDatetime) {
+                        const meetingDate = new Date(nextMeeting.scheduled_time);
+                        StudentDOM.upcomingMeetingDatetime.textContent = formatDateTime(meetingDate);
+                    }
+                    
+                    if (StudentDOM.upcomingMeetingTitle) {
+                        StudentDOM.upcomingMeetingTitle.textContent = nextMeeting.title || 'Untitled Meeting';
+                    }
+                    
+                    if (StudentDOM.upcomingMeetingType) {
+                        StudentDOM.upcomingMeetingType.textContent = nextMeeting.meeting_type || 'General';
+                    }
+                    
+                    if (StudentDOM.noUpcomingMeetings) {
+                        StudentDOM.noUpcomingMeetings.classList.add('hidden');
+                    }
+                    
+                    if (StudentDOM.upcomingMeetingDetails) {
+                        StudentDOM.upcomingMeetingDetails.classList.remove('hidden');
+                    }
+                } else {
+                    if (StudentDOM.noUpcomingMeetings) {
+                        StudentDOM.noUpcomingMeetings.classList.remove('hidden');
+                    }
+                    
+                    if (StudentDOM.upcomingMeetingDetails) {
+                        StudentDOM.upcomingMeetingDetails.classList.add('hidden');
+                    }
+                }
+            }
+            
+            // Update submissions info
+            if (StudentDOM.submissionsTableBody) {
+                StudentDOM.submissionsTableBody.innerHTML = '';
+                
+                if (studentSubmissionsData.length > 0) {
+                    studentSubmissionsData.forEach(submission => {
+                        const row = document.createElement('tr');
+                        const submissionDate = new Date(submission.submitted_at);
+                        const status = submission.status || 'pending';
+                        
+                        row.innerHTML = `
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${submission.submission_type || 'Document'}
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                ${submission.title || 'Untitled Submission'}
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${formatDate(submissionDate)}
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                <span class="status-badge ${getStatusBadgeClass(status)}">
+                                    ${capitalizeFirstLetter(status)}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+                            </td>
+                        `;
+                        
+                        StudentDOM.submissionsTableBody.appendChild(row);
+                    });
+                } else {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = `
+                        <td class="px-4 py-4 text-sm text-gray-500" colspan="5">
+                            No submissions yet.
+                        </td>
+                    `;
+                    StudentDOM.submissionsTableBody.appendChild(emptyRow);
+                }
+            }
+            
+            // Update notifications info
+            if (StudentDOM.notificationsList) {
+                StudentDOM.notificationsList.innerHTML = '';
+                
+                if (studentNotificationsData.length > 0) {
+                    studentNotificationsData.forEach(notification => {
+                        const li = document.createElement('li');
+                        li.className = 'py-3';
+                        
+                        const notifDate = new Date(notification.created_at);
+                        const timeAgo = getTimeAgo(notifDate);
+                        
+                        li.innerHTML = `
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-bell text-indigo-500"></i>
+                                </div>
+                                <div class="ml-3 w-0 flex-1">
+                                    <p class="text-sm font-medium text-gray-900">${notification.title}</p>
+                                    <p class="text-sm text-gray-500">${notification.message}</p>
+                                    <p class="mt-1 text-xs text-gray-400">${timeAgo}</p>
+                                </div>
+                                <div class="ml-4 flex-shrink-0">
+                                    <button class="text-gray-400 hover:text-gray-500">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        StudentDOM.notificationsList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.className = 'py-3 text-gray-500';
+                    li.textContent = 'No new notifications.';
+                    StudentDOM.notificationsList.appendChild(li);
+                }
+            }
+            
+            // Update profile info
+            if (studentProfileData) {
+                if (StudentDOM.profileStudentId) {
+                    StudentDOM.profileStudentId.textContent = studentProfileData.student_id || 'N/A';
+                }
+                
+                if (StudentDOM.profileProgram) {
+                    StudentDOM.profileProgram.textContent = studentProfileData.program || 'N/A';
+                }
+                
+                if (StudentDOM.profileDepartment) {
+                    StudentDOM.profileDepartment.textContent = studentProfileData.department || 'N/A';
+                }
+                
+                if (StudentDOM.profileYear) {
+                    StudentDOM.profileYear.textContent = studentProfileData.year_of_study || 'N/A';
+                }
+            }
+        } catch (error) {
+            console.error('Error updating dashboard UI:', error);
+        }
+    }
+
+    // Set up realtime subscriptions
+    function setupRealtimeSubscriptions() {
+        try {
+            if (!studentSupabaseClient || !studentCurrentUser || !studentCurrentUser.id) {
+                console.warn('Cannot set up realtime subscriptions: Missing client or user ID');
+                return false;
+            }
+            
+            // Subscribe to meetings updates
+            studentSupabaseClient
+                .channel('public:meetings')
+                .on('postgres_changes', 
+                    { 
+                        event: '*', 
+                        schema: 'public', 
+                        table: 'meetings',
+                        filter: `student_id=eq.${studentProfileData?.id}`
+                    }, 
+                    payload => {
+                        console.log('Meetings update:', payload);
+                        loadMeetingsData().then(() => {
+                            updateStudentDashboardUI();
+                        });
+                    }
+                )
+                .subscribe();
+                
+            // Subscribe to notifications
+            studentSupabaseClient
+                .channel('public:notifications')
+                .on('postgres_changes', 
+                    { 
+                        event: '*', 
+                        schema: 'public', 
+                        table: 'notifications',
+                        filter: `user_id=eq.${studentCurrentUser.id}`
+                    }, 
+                    payload => {
+                        console.log('Notifications update:', payload);
+                        loadNotificationsData().then(() => {
+                            updateStudentDashboardUI();
+                        });
+                    }
+                )
+                .subscribe();
+                
+            // Subscribe to project updates
+            if (studentProfileData?.id) {
+                studentSupabaseClient
+                    .channel('public:projects')
+                    .on('postgres_changes', 
+                        { 
+                            event: '*', 
+                            schema: 'public', 
+                            table: 'projects',
+                            filter: `student_id=eq.${studentProfileData.id}`
+                        }, 
+                        payload => {
+                            console.log('Project update:', payload);
+                            loadProjectData().then(() => {
+                                updateStudentDashboardUI();
+                            });
+                        }
+                    )
+                    .subscribe();
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Failed to set up realtime subscriptions:', error);
+            return false;
+        }
+    }
+
+    // Set up UI event listeners
+    function setupEventListeners() {
+        // Handle logout button click
+        if (StudentDOM.logoutBtn) {
+            StudentDOM.logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await studentSupabaseClient.auth.signOut();
+                    window.location.href = window.PathConfig?.LOGIN || '/login.html';
+                } catch (error) {
+                    console.error('Error signing out:', error);
+                    showErrorMessage('Failed to sign out. Please try again.');
+                }
+            });
+        }
+    }
+
+    // Helper function to show error message
+    function showErrorMessage(message) {
+        if (StudentDOM.errorMessage && StudentDOM.errorMessageText) {
+            StudentDOM.errorMessageText.textContent = message;
+            StudentDOM.errorMessage.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                StudentDOM.errorMessage.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    // Helper functions for formatting
+    function formatDate(date) {
+        if (!(date instanceof Date) || isNaN(date)) return 'Invalid date';
+        
+        return date.toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    function formatDateTime(date) {
+        if (!(date instanceof Date) || isNaN(date)) return 'Invalid date';
+        
+        return date.toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function getTimeAgo(date) {
+        if (!(date instanceof Date) || isNaN(date)) return 'some time ago';
+        
+        const seconds = Math.floor((new Date() - date) / 1000);
+        let interval = Math.floor(seconds / 31536000);
+        
+        if (interval >= 1) {
+            return interval === 1 ? '1 year ago' : `${interval} years ago`;
+        }
+        interval = Math.floor(seconds / 2592000);
+        if (interval >= 1) {
+            return interval === 1 ? '1 month ago' : `${interval} months ago`;
+        }
+        interval = Math.floor(seconds / 86400);
+        if (interval >= 1) {
+            return interval === 1 ? '1 day ago' : `${interval} days ago`;
+        }
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) {
+            return interval === 1 ? '1 hour ago' : `${interval} hours ago`;
+        }
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) {
+            return interval === 1 ? '1 minute ago' : `${interval} minutes ago`;
+        }
+        return seconds < 10 ? 'just now' : `${seconds} seconds ago`;
+    }
+
+    function getStatusBadgeClass(status) {
+        switch (status.toLowerCase()) {
+            case 'on_track':
+            case 'approved':
+            case 'completed':
+                return 'status-on-track';
+            case 'behind':
+            case 'pending':
+                return 'status-behind';
+            case 'attention':
+            case 'rejected':
+                return 'status-attention';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
+    }
+
+    function capitalizeFirstLetter(string) {
+        if (!string) return '';
+        string = string.replace(/_/g, ' ');
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    // Make student dashboard initialization available globally
+    window.initializeStudentDashboard = initializeStudentDashboard;
+
+    // Initialize on DOM content loaded
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            await initializeStudentDashboard();
+        } catch (error) {
+            console.error('Failed to initialize student dashboard:', error);
+        }
+    });
+
+    // Initialize when auth module is ready
+    window.addEventListener(window.AuthModuleEventsGlobal?.AUTH_MODULE_READY, async () => {
+        try {
+            await initializeStudentDashboard();
+        } catch (error) {
+            console.error('Failed to initialize student dashboard after auth ready:', error);
+        }
+    });
+
+    // Update when auth state changes
+    window.addEventListener(window.AuthModuleEventsGlobal?.AUTH_STATE_CHANGED, async (event) => {
+        if (event.detail && event.detail.event === 'SIGNED_IN') {
+            try {
+                await initializeStudentDashboard();
+            } catch (error) {
+                console.error('Failed to initialize student dashboard after sign in:', error);
+            }
+        } else if (event.detail && event.detail.event === 'SIGNED_OUT') {
+            window.location.href = window.PathConfig?.LOGIN || '/login.html';
+        }
+    });
+
+    console.log('student.js loaded. initializeStudentDashboard is available on window object.');
+    </script>
+</body>
+</html>

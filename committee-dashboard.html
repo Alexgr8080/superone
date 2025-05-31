@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethics Committee Dashboard | Supervision System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/committee.js"></script>
+    <script src="js/script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Supervision System</h1>
+        </div>
+        <div class="user-info">
+            <span id="userNameDisplay">Committee Member</span>
+            <div id="userAvatar" class="avatar"></div>
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#overview" class="active">Overview</a></li>
+            <li><a href="#pending">Pending Reviews</a></li>
+            <li><a href="#completed">Completed Reviews</a></li>
+            <li><a href="#reports">Reports</a></li>
+            <li><a href="#profile">My Profile</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <section id="overview" class="active-section">
+            <h2>Ethics Committee Dashboard</h2>
+            <h3>Academic Year: 2024-2025</h3>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h4>Pending Reviews</h4>
+                    <p id="pendingReviewsCount">--</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Approved This Month</h4>
+                    <p id="approvedMonthCount">--</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Rejected This Month</h4>
+                    <p id="rejectedMonthCount">--</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Average Review Time</h4>
+                    <p id="avgReviewTime">--</p>
+                </div>
+            </div>
+            
+            <div class="container">
+                <h3>Recent Activity</h3>
+                <div id="recentActivityContainer">
+                    <p>Loading activity...</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="pending" class="hidden-section">
+            <h2>Pending Reviews</h2>
+            <div class="filter-controls">
+                <div class="search-box">
+                    <input type="text" id="pendingSearchInput" placeholder="Search by student or title">
+                </div>
+                <div class="filter-dropdown">
+                    <label for="departmentFilter">Department:</label>
+                    <select id="departmentFilter">
+                        <option value="all">All Departments</option>
+                    </select>
+                </div>
+                <div class="sort-dropdown">
+                    <label for="sortOptions">Sort By:</label>
+                    <select id="sortOptions">
+                        <option value="date_desc">Date (Newest First)</option>
+                        <option value="date_asc">Date (Oldest First)</option>
+                        <option value="student_asc">Student Name (A-Z)</option>
+                        <option value="student_desc">Student Name (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="pendingReviewsTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date Submitted</th>
+                            <th>Student</th>
+                            <th>Title</th>
+                            <th>Department</th>
+                            <th>Risk Level</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingReviewsTableBody">
+                        <tr>
+                            <td colspan="7">Loading pending reviews...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <section id="completed" class="hidden-section">
+            <h2>Completed Reviews</h2>
+            <div class="filter-controls">
+                <div class="search-box">
+                    <input type="text" id="completedSearchInput" placeholder="Search by student or title">
+                </div>
+                <div class="filter-dropdown">
+                    <label for="statusFilter">Status:</label>
+                    <select id="statusFilter">
+                        <option value="all">All Statuses</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="filter-dropdown">
+                    <label for="dateRangeFilter">Time Period:</label>
+                    <select id="dateRangeFilter">
+                        <option value="all">All Time</option>
+                        <option value="month">Past Month</option>
+                        <option value="quarter">Past Quarter</option>
+                        <option value="year">Past Year</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="completedReviewsTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date Reviewed</th>
+                            <th>Student</th>
+                            <th>Title</th>
+                            <th>Department</th>
+                            <th>Risk Level</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="completedReviewsTableBody">
+                        <tr>
+                            <td colspan="8">Loading completed reviews...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <section id="reports" class="hidden-section">
+            <h2>Ethics Review Reports</h2>
+            <div class="report-options">
+                <div class="report-card">
+                    <h3>Monthly Review Summary</h3>
+                    <p>Generate a report summarizing all ethics reviews for a specific month.</p>
+                    <button class="primary-button">Generate Report</button>
+                </div>
+                <div class="report-card">
+                    <h3>Department Analysis</h3>
+                    <p>Analyze ethics submissions by department, risk levels, and approval rates.</p>
+                    <button class="primary-button">Generate Report</button>
+                </div>
+                <div class="report-card">
+                    <h3>Annual Ethics Review</h3>
+                    <p>Comprehensive yearly report on all ethics submissions and outcomes.</p>
+                    <button class="primary-button">Generate Report</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="profile" class="hidden-section">
+            <h2>My Profile</h2>
+            <div class="profile-container">
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="memberName">Full Name</label>
+                        <input type="text" id="memberName" name="memberName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberEmail">Email</label>
+                        <input type="email" id="memberEmail" name="memberEmail" required disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberDepartment">Department</label>
+                        <input type="text" id="memberDepartment" name="memberDepartment">
+                    </div>
+                    <div class="form-group">
+                        <label for="memberRole">Committee Role</label>
+                        <input type="text" id="memberRole" name="memberRole">
+                    </div>
+                    <button type="submit" class="primary-button">Update Profile</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Supervision System</p>
+    </footer>
+</body>
+</html>

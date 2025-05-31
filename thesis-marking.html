@@ -1,0 +1,205 @@
+<!-- thesis-marking.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Marking | Academic Supervision System</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Add any additional CSS files -->
+</head>
+<body>
+    <header>
+        <nav class="main-nav">
+            <div class="logo">Academic Supervision System</div>
+            <div class="user-info">
+                <span id="portal-type">Marker Portal</span>
+                <div class="user-details">
+                    <span id="user-name">Loading...</span>
+                    <div class="avatar" id="user-avatar"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="marking-container">
+        <section class="breadcrumb">
+            <a href="/markers.html">Dashboard</a> > Thesis Marking
+        </section>
+        
+        <section class="thesis-details">
+            <h2 id="thesis-title">Loading thesis details...</h2>
+            <div class="metadata">
+                <p><strong>Student:</strong> <span id="student-name">--</span></p>
+                <p><strong>Submission Date:</strong> <span id="submission-date">--</span></p>
+                <p><strong>Status:</strong> <span id="marking-status">--</span></p>
+            </div>
+        </section>
+        
+        <section class="thesis-content">
+            <h3>Abstract</h3>
+            <div id="thesis-abstract" class="abstract-container">
+                Loading abstract...
+            </div>
+            
+            <h3>Attached Files</h3>
+            <div id="thesis-files" class="files-container">
+                <p>Loading files...</p>
+            </div>
+        </section>
+        
+        <section class="marking-criteria">
+            <h3>Marking Criteria</h3>
+            <form id="marking-form">
+                <div class="criteria-group">
+                    <h4>Research Question & Methodology (30%)</h4>
+                    <div class="criteria-item">
+                        <label for="research-clarity">Clarity and significance of research question</label>
+                        <input type="range" id="research-clarity" name="research-clarity" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="criteria-item">
+                        <label for="methodology">Appropriateness and application of methodology</label>
+                        <input type="range" id="methodology" name="methodology" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="methodology-comments">Comments</label>
+                        <textarea id="methodology-comments" name="methodology-comments" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="criteria-group">
+                    <h4>Literature Review & Context (20%)</h4>
+                    <div class="criteria-item">
+                        <label for="literature-breadth">Breadth and depth of literature review</label>
+                        <input type="range" id="literature-breadth" name="literature-breadth" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="criteria-item">
+                        <label for="literature-critical">Critical analysis of existing research</label>
+                        <input type="range" id="literature-critical" name="literature-critical" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="literature-comments">Comments</label>
+                        <textarea id="literature-comments" name="literature-comments" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="criteria-group">
+                    <h4>Data Analysis & Results (25%)</h4>
+                    <div class="criteria-item">
+                        <label for="data-analysis">Quality of data analysis</label>
+                        <input type="range" id="data-analysis" name="data-analysis" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="criteria-item">
+                        <label for="results-presentation">Presentation and interpretation of results</label>
+                        <input type="range" id="results-presentation" name="results-presentation" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="data-comments">Comments</label>
+                        <textarea id="data-comments" name="data-comments" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="criteria-group">
+                    <h4>Discussion & Conclusion (15%)</h4>
+                    <div class="criteria-item">
+                        <label for="discussion-quality">Quality of discussion</label>
+                        <input type="range" id="discussion-quality" name="discussion-quality" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="criteria-item">
+                        <label for="conclusion">Strength of conclusion and implications</label>
+                        <input type="range" id="conclusion" name="conclusion" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="discussion-comments">Comments</label>
+                        <textarea id="discussion-comments" name="discussion-comments" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="criteria-group">
+                    <h4>Structure & Presentation (10%)</h4>
+                    <div class="criteria-item">
+                        <label for="structure">Overall structure and organization</label>
+                        <input type="range" id="structure" name="structure" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="criteria-item">
+                        <label for="writing-quality">Quality of academic writing and referencing</label>
+                        <input type="range" id="writing-quality" name="writing-quality" min="0" max="100" value="0">
+                        <span class="score">0%</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="structure-comments">Comments</label>
+                        <textarea id="structure-comments" name="structure-comments" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="final-grade">
+                    <h3>Final Grade: <span id="calculated-grade">0%</span></h3>
+                    <div class="form-group">
+                        <label for="overall-feedback">Overall Feedback</label>
+                        <textarea id="overall-feedback" name="overall-feedback" rows="6" required></textarea>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button type="button" id="save-draft-btn" class="btn btn-secondary">Save Draft</button>
+                    <button type="submit" id="submit-marking-btn" class="btn btn-primary">Submit Marking</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 Academic Supervision System</p>
+    </footer>
+    
+    <!-- Load JavaScript files -->
+    <script src="/js/supabaseClient.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/thesis-marking.js"></script>
+    <script>
+        // Initialize range input display
+        document.querySelectorAll('input[type="range"]').forEach(range => {
+            range.addEventListener('input', (e) => {
+                e.target.nextElementSibling.textContent = e.target.value + '%';
+                calculateFinalGrade();
+            });
+        });
+        
+        function calculateFinalGrade() {
+            // Weight for each category
+            const weights = {
+                'research-clarity': 0.15,
+                'methodology': 0.15,
+                'literature-breadth': 0.10,
+                'literature-critical': 0.10,
+                'data-analysis': 0.125,
+                'results-presentation': 0.125,
+                'discussion-quality': 0.075,
+                'conclusion': 0.075,
+                'structure': 0.05,
+                'writing-quality': 0.05
+            };
+            
+            let finalGrade = 0;
+            
+            Object.keys(weights).forEach(criteriaId => {
+                const rangeInput = document.getElementById(criteriaId);
+                if (rangeInput) {
+                    finalGrade += weights[criteriaId] * parseInt(rangeInput.value);
+                }
+            });
+            
+            document.getElementById('calculated-grade').textContent = Math.round(finalGrade) + '%';
+        }
+    </script>
+</body>
+</html>

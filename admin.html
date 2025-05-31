@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Admin Dashboard - Supervision System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-gray-800">
+                <div class="flex items-center justify-center h-16 bg-gray-900">
+                    <span class="text-white font-bold text-lg">Supervision System</span>
+                </div>
+                <div class="flex flex-col flex-grow overflow-y-auto">
+                    <nav class="flex-1 px-2 py-4 space-y-1">
+                        <a href="#dashboard" class="flex items-center px-4 py-3 text-white bg-gray-700 rounded-md">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="#supervisors" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-user-tie mr-3"></i>
+                            <span>Supervisors</span>
+                        </a>
+                        <a href="#students" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-user-graduate mr-3"></i>
+                            <span>Students</span>
+                        </a>
+                        <a href="#programs" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-book mr-3"></i>
+                            <span>Program Templates</span>
+                        </a>
+                        <a href="#reports" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-chart-bar mr-3"></i>
+                            <span>Reports</span>
+                        </a>
+                        <a href="#settings" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>System Settings</span>
+                        </a>
+                    </nav>
+                </div>
+                <div class="p-4 bg-gray-700">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <img class="h-10 w-10 rounded-full" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="Admin profile">
+                        </div>
+                        <div class="ml-3">
+                            <div class="text-sm font-medium text-white">Admin User</div>
+                            <div class="text-xs text-gray-300">admin@university.edu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex flex-col flex-1 overflow-hidden">
+            <header class="bg-white shadow-sm">
+                <div class="flex justify-between items-center px-4 py-3">
+                    <div class="flex items-center">
+                        <button class="md:hidden mr-2">
+                            <i class="fas fa-bars text-gray-500"></i>
+                        </button>
+                        <h1 class="text-xl font-semibold">Admin Dashboard</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="flex text-gray-500 focus:outline-none">
+                                <i class="fas fa-bell"></i>
+                                <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <button class="flex text-gray-500 focus:outline-none">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="flex-1 overflow-y-auto p-4 bg-gray-100">
+                <div id="dashboard" class="mb-8">
+                    <h2 class="text-xl font-semibold mb-4">Organization Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 rounded-md p-3 bg-blue-100">
+                                    <i class="fas fa-user-tie text-blue-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-medium">Supervisors</h3>
+                                    <div class="text-3xl font-bold" id="supervisorCount">24</div>
+                                    <div class="text-sm text-green-500">+2 this month</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 rounded-md p-3 bg-green-100">
+                                    <i class="fas fa-user-graduate text-green-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-medium">Students</h3>
+                                    <div class="text-3xl font-bold" id="studentCount">187</div>
+                                    <div class="text-sm text-green-500">+15 this month</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 rounded-md p-3 bg-yellow-100">
+                                    <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-medium">Needs Attention</h3>
+                                    <div class="text-3xl font-bold" id="attentionCount">8</div>
+                                    <div class="text-sm text-red-500">+3 this week</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 rounded-md p-3 bg-purple-100">
+                                    <i class="fas fa-calendar-check text-purple-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-medium">Meetings This Week</h3>
+                                    <div class="text-3xl font-bold" id="meetingsCount">42</div>
+                                    <div class="text-sm text-gray-500">Across all supervisors</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <h3 class="text-lg font-medium mb-4">Project Status Distribution</h3>
+                            <div class="h-64">
+                                <canvas id="projectStatusChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <h3 class="text-lg font-medium mb-4">Student Progress Trends</h3>
+                            <div class="h-64">
+                                <canvas id="progressTrendsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="supervisors" class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Manage Supervisors</h2>
+                        <button id="addSupervisorBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Supervisor
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label for="supervisorSearch" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                                <input type="text" id="supervisorSearch" placeholder="Name, email or department" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="supervisorDept" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                                <select id="supervisorDept" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Departments</option>
+                                    <option value="1">Computer Science</option>
+                                    <option value="2">Engineering</option>
+                                    <option value="3">Business</option>
+                                    <option value="4">Arts & Humanities</option>
+                                    <option value="5">Sciences</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="supervisorRole" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                <select id="supervisorRole" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Roles</option>
+                                    <option value="supervisor">Supervisor</option>
+                                    <option value="program_lead">Program Lead</option>
+                                    <option value="committee">Committee Member</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="supervisorStatus" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select id="supervisorStatus" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Statuses</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="on_leave">On Leave</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Roles</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="supervisorTableBody">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-full" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Dr. Jane Smith</div>
+                                                <div class="text-sm text-gray-500">Faculty ID: S12345</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">jsmith@university.edu</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Computer Science</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Supervisor</span>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Program Lead</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3 edit-supervisor" data-id="1"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900 delete-supervisor" data-id="1"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-full" src="https://www.gravatar.com/avatar/11111111111111111111111111111111?d=mp&f=y" alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Dr. Michael Johnson</div>
+                                                <div class="text-sm text-gray-500">Faculty ID: S67890</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">mjohnson@university.edu</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Engineering</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Supervisor</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3 edit-supervisor" data-id="2"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900 delete-supervisor" data-id="2"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                            <div class="flex justify-between">
+                                <div class="text-sm text-gray-700">
+                                    Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">24</span> supervisors
+                                </div>
+                                <div>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Previous</span>
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">1</a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-gray-50">2</a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">3</a>
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Next</span>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="students" class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Manage Students</h2>
+                        <button id="addStudentBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Student
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label for="studentSearch" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                                <input type="text" id="studentSearch" placeholder="Name, email or ID" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="studentDept" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                                <select id="studentDept" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Departments</option>
+                                    <option value="1">Computer Science</option>
+                                    <option value="2">Engineering</option>
+                                    <option value="3">Business</option>
+                                    <option value="4">Arts & Humanities</option>
+                                    <option value="5">Sciences</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="studentProgram" class="block text-sm font-medium text-gray-700 mb-1">Program</label>
+                                <select id="studentProgram" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Programs</option>
+                                    <option value="phd">PhD</option>
+                                    <option value="masters">Master's</option>
+                                    <option value="undergrad">Undergraduate</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="studentStatus" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select id="studentStatus" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Statuses</option>
+                                    <option value="active">Active</option>
+                                    <option value="on_hold">On Hold</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="withdrawn">Withdrawn</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supervisor</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Enrolled</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="studentTableBody">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-full" src="https://www.gravatar.com/avatar/22222222222222222222222222222222?d=mp&f=y" alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Emma Johnson</div>
+                                                <div class="text-sm text-gray-500">Student ID: 2024CS001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">ejohnson@university.edu</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Computer Science</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">PhD</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dr. Jane Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sep 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3 edit-student" data-id="1"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900 delete-student" data-id="1"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-full" src="https://www.gravatar.com/avatar/33333333333333333333333333333333?d=mp&f=y" alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Michael Brown</div>
+                                                <div class="text-sm text-gray-500">Student ID: 2024ENG005</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">mbrown@university.edu</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Engineering</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">MSc</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dr. Michael Johnson</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 2024</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3 edit-student" data-id="2"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900 delete-student" data-id="2"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                            <div class="flex justify-between">
+                                <div class="text-sm text-gray-700">
+                                    Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">187</span> students
+                                </div>
+                                <div>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Previous</span>
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-gray-50">1</a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">2</a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">3</a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">...</a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">19</a>
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Next</span>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="programs" class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Program Templates</h2>
+                        <button id="addProgramBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Program Template
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="programSearch" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                                <input type="text" id="programSearch" placeholder="Program name" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="programDept" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                                <select id="programDept" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Departments</option>
+                                    <option value="1">Computer Science</option>
+                                    <option value="2">Engineering</option>
+                                    <option value="3">Business</option>
+                                    <option value="4">Arts & Humanities</option>
+                                    <option value="5">Sciences</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="programType" class="block text-sm font-medium text-gray-700 mb-1">Program Type</label>
+                                <select id="programType" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Types</option>
+                                    <option value="phd">PhD</option>
+                                    <option value="masters">Master's</option>
+                                    <option value="undergrad">Undergraduate</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program Name</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Milestones</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="programTableBody">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Computer Science PhD</div>
+                                        <div class="text-sm text-gray-500">Research focused doctorate</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Computer Science</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3-4 years</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">45</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3 edit-program" data-id="1"><i class="fas fa-edit"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3 view-program" data-id="1"><i class="fas fa-eye"></i></button>
+                                        <button class="text-red-600 hover:text-red-900 delete-program" data-id="1"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">MSc in Engineering</div>
+                                        <div class="text-sm text-gray-500">Applied engineering masters</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Engineering</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1-2 years</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">62</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3 edit-program" data-id="2"><i class="fas fa-edit"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3 view-program" data-id="2"><i class="fas fa-eye"></i></button>
+                                        <button class="text-red-600 hover:text-red-900 delete-program" data-id="2"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                            <div class="flex justify-between">
+                                <div class="text-sm text-gray-700">
+                                    Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">14</span> programs
+                                </div>
+                                <div>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Previous</span>
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-gray-50">1</a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">2</a>
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Next</span>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="supervisorModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-900" id="supervisorModalTitle">Add New Supervisor</h3>
+                    <button type="button" class="text-gray-400 hover:text-gray-500" id="closeSupervisorModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="supervisorForm" class="p-6">
+                <input type="hidden" id="supervisorId" value="">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="supervisorName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="supervisorName" name="supervisorName" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="supervisorEmail" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="supervisorEmail" name="supervisorEmail" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="supervisorFacultyId" class="block text-sm font-medium text-gray-700 mb-1">Faculty ID</label>
+                        <input type="text" id="supervisorFacultyId" name="supervisorFacultyId" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="supervisorDeptSelect" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                        <select id="supervisorDeptSelect" name="supervisorDeptSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                            <option value="">Select Department</option>
+                            <option value="1">Computer Science</option>
+                            <option value="2">Engineering</option>
+                            <option value="3">Business</option>
+                            <option value="4">Arts & Humanities</option>
+                            <option value="5">Sciences</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="supervisorPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        <input type="tel" id="supervisorPhone" name="supervisorPhone" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="supervisorStatusSelect" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select id="supervisorStatusSelect" name="supervisorStatusSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="on_leave">On Leave</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Roles</label>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input id="roleCheckbox1" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="roleCheckbox1" class="ml-2 block text-sm text-gray-900">Supervisor</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="roleCheckbox2" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="roleCheckbox2" class="ml-2 block text-sm text-gray-900">Program Lead</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="roleCheckbox3" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="roleCheckbox3" class="ml-2 block text-sm text-gray-900">Ethics Committee</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="roleCheckbox4" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="roleCheckbox4" class="ml-2 block text-sm text-gray-900">Marker</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label for="supervisorNotes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                    <textarea id="supervisorNotes" name="supervisorNotes" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                </div>
+                
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="bg-gray-100 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="cancelSupervisorModal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="studentModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-900" id="studentModalTitle">Add New Student</h3>
+                    <button type="button" class="text-gray-400 hover:text-gray-500" id="closeStudentModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="studentForm" class="p-6">
+                <input type="hidden" id="studentId" value="">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="studentName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="studentName" name="studentName" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="studentEmail" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="studentEmail" name="studentEmail" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="studentId" class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+                        <input type="text" id="studentIdInput" name="studentIdInput" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="studentDeptSelect" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                        <select id="studentDeptSelect" name="studentDeptSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                            <option value="">Select Department</option>
+                            <option value="1">Computer Science</option>
+                            <option value="2">Engineering</option>
+                            <option value="3">Business</option>
+                            <option value="4">Arts & Humanities</option>
+                            <option value="5">Sciences</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="studentProgSelect" class="block text-sm font-medium text-gray-700 mb-1">Program</label>
+                        <select id="studentProgSelect" name="studentProgSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                            <option value="">Select Program</option>
+                            <option value="1">Computer Science PhD</option>
+                            <option value="2">MSc in Engineering</option>
+                            <option value="3">MBA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="studentSupervisorSelect" class="block text-sm font-medium text-gray-700 mb-1">Supervisor</label>
+                        <select id="studentSupervisorSelect" name="studentSupervisorSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                            <option value="">Select Supervisor</option>
+                            <option value="1">Dr. Jane Smith</option>
+                            <option value="2">Dr. Michael Johnson</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="studentEnrollDate" class="block text-sm font-medium text-gray-700 mb-1">Enrollment Date</label>
+                        <input type="date" id="studentEnrollDate" name="studentEnrollDate" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="studentStatusSelect" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select id="studentStatusSelect" name="studentStatusSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                            <option value="active">Active</option>
+                            <option value="on_hold">On Hold</option>
+                            <option value="completed">Completed</option>
+                            <option value="withdrawn">Withdrawn</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label for="studentNotes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                    <textarea id="studentNotes" name="studentNotes" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                </div>
+                
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="bg-gray-100 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="cancelStudentModal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="programModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-900" id="programModalTitle">Add New Program Template</h3>
+                    <button type="button" class="text-gray-400 hover:text-gray-500" id="closeProgramModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="programForm" class="p-6">
+                <input type="hidden" id="programId" value="">
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label for="programName" class="block text-sm font-medium text-gray-700 mb-1">Program Name</label>
+                        <input type="text" id="programName" name="programName" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="programDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="programDescription" name="programDescription" rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="programDeptSelect" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                            <select id="programDeptSelect" name="programDeptSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                                <option value="">Select Department</option>
+                                <option value="1">Computer Science</option>
+                                <option value="2">Engineering</option>
+                                <option value="3">Business</option>
+                                <option value="4">Arts & Humanities</option>
+                                <option value="5">Sciences</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="programDuration" class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                            <div class="flex">
+                                <input type="number" id="programDurationMin" name="programDurationMin" min="1" max="10" class="w-20 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                                <span class="mx-2 self-center">-</span>
+                                <input type="number" id="programDurationMax" name="programDurationMax" min="1" max="10" class="w-20 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                                <span class="ml-2 self-center text-sm text-gray-700">years</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Milestones</label>
+                    <div class="border rounded-md p-4 max-h-60 overflow-y-auto space-y-3" id="milestonesContainer">
+                        <div class="milestone-item bg-gray-50 p-3 rounded border">
+                            <div class="flex justify-between items-center mb-2">
+                                <input type="text" placeholder="Milestone name" class="border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                                <button type="button" class="text-red-500 hover:text-red-700 remove-milestone">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700">Timeline</label>
+                                    <div class="flex items-center">
+                                        <input type="number" min="1" max="48" class="w-16 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                                        <span class="ml-2 text-xs text-gray-500">months from start</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700">Required?</label>
+                                    <select class="border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 w-full" required>
+                                        <option value="required">Required</option>
+                                        <option value="optional">Optional</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="addMilestoneBtn" class="mt-2 flex items-center text-sm text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-plus mr-1"></i> Add Milestone
+                    </button>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Required Documents</label>
+                    <div class="border rounded-md p-4 max-h-40 overflow-y-auto space-y-2" id="documentsContainer">
+                        <div class="document-item flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <input type="text" placeholder="Document name" class="ml-2 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <button type="button" class="text-red-500 hover:text-red-700 remove-document">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" id="addDocumentBtn" class="mt-2 flex items-center text-sm text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-plus mr-1"></i> Add Document
+                    </button>
+                </div>
+                
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="bg-gray-100 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="cancelProgramModal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="deleteConfirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Confirm Delete</h3>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-700" id="deleteConfirmText">Are you sure you want to delete this item? This action cannot be undone.</p>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="bg-gray-100 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="cancelDeleteBtn">
+                        Cancel
+                    </button>
+                    <button type="button" class="bg-red-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" id="confirmDeleteBtn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Charts
+            const projectStatusCtx = document.getElementById('projectStatusChart').getContext('2d');
+            const progressTrendsCtx = document.getElementById('progressTrendsChart').getContext('2d');
+            
+            const projectStatusChart = new Chart(projectStatusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['On Track', 'Behind Schedule', 'At Risk', 'Completed', 'Not Started'],
+                    datasets: [{
+                        data: [65, 15, 8, 7, 5],
+                        backgroundColor: [
+                            '#10B981', // green
+                            '#FBBF24', // yellow
+                            '#EF4444', // red
+                            '#6366F1', // indigo
+                            '#9CA3AF'  // gray
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+            
+            const progressTrendsChart = new Chart(progressTrendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'On Track',
+                            data: [45, 52, 58, 60, 65, 68],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Behind',
+                            data: [30, 25, 22, 18, 15, 15],
+                            borderColor: '#FBBF24',
+                            backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'At Risk',
+                            data: [10, 12, 8, 7, 6, 8],
+                            borderColor: '#EF4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Students'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '2024'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // Modal Management
+            // Supervisor Modal
+            const supervisorModal = document.getElementById('supervisorModal');
+            const addSupervisorBtn = document.getElementById('addSupervisorBtn');
+            const closeSupervisorModal = document.getElementById('closeSupervisorModal');
+            const cancelSupervisorModal = document.getElementById('cancelSupervisorModal');
+            const supervisorForm = document.getElementById('supervisorForm');
+            
+            addSupervisorBtn.addEventListener('click', function() {
+                document.getElementById('supervisorModalTitle').textContent = 'Add New Supervisor';
+                document.getElementById('supervisorId').value = '';
+                supervisorForm.reset();
+                supervisorModal.classList.remove('hidden');
+            });
+            
+            function closeSupervisorModalFn() {
+                supervisorModal.classList.add('hidden');
+            }
+            
+            closeSupervisorModal.addEventListener('click', closeSupervisorModalFn);
+            cancelSupervisorModal.addEventListener('click', closeSupervisorModalFn);
+            
+            supervisorForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Here you would handle the form submission
+                // For now, let's just close the modal
+                alert('Supervisor saved successfully!');
+                closeSupervisorModalFn();
+            });
+            
+            // Student Modal
+            const studentModal = document.getElementById('studentModal');
+            const addStudentBtn = document.getElementById('addStudentBtn');
+            const closeStudentModal = document.getElementById('closeStudentModal');
+            const cancelStudentModal = document.getElementById('cancelStudentModal');
+            const studentForm = document.getElementById('studentForm');
+            
+            addStudentBtn.addEventListener('click', function() {
+                document.getElementById('studentModalTitle').textContent = 'Add New Student';
+                document.getElementById('studentId').value = '';
+                studentForm.reset();
+                studentModal.classList.remove('hidden');
+            });
+            
+            function closeStudentModalFn() {
+                studentModal.classList.add('hidden');
+            }
+            
+            closeStudentModal.addEventListener('click', closeStudentModalFn);
+            cancelStudentModal.addEventListener('click', closeStudentModalFn);
+            
+            studentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Here you would handle the form submission
+                // For now, let's just close the modal
+                alert('Student saved successfully!');
+                closeStudentModalFn();
+            });
+            
+            // Program Modal
+            const programModal = document.getElementById('programModal');
+            const addProgramBtn = document.getElementById('addProgramBtn');
+            const closeProgramModal = document.getElementById('closeProgramModal');
+            const cancelProgramModal = document.getElementById('cancelProgramModal');
+            const programForm = document.getElementById('programForm');
+            
+            addProgramBtn.addEventListener('click', function() {
+                document.getElementById('programModalTitle').textContent = 'Add New Program Template';
+                document.getElementById('programId').value = '';
+                programForm.reset();
+                programModal.classList.remove('hidden');
+            });
+            
+            function closeProgramModalFn() {
+                programModal.classList.add('hidden');
+            }
+            
+            closeProgramModal.addEventListener('click', closeProgramModalFn);
+            cancelProgramModal.addEventListener('click', closeProgramModalFn);
+            
+            programForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Here you would handle the form submission
+                // For now, let's just close the modal
+                alert('Program template saved successfully!');
+                closeProgramModalFn();
+            });
+            
+            // Delete confirmation modal
+            const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            let currentDeleteTarget = null;
+            
+            function showDeleteConfirmation(target, itemType, itemName) {
+                currentDeleteTarget = target;
+                document.getElementById('deleteConfirmText').textContent = 
+                    `Are you sure you want to delete ${itemType} "${itemName}"? This action cannot be undone.`;
+                deleteConfirmModal.classList.remove('hidden');
+            }
+            
+            function closeDeleteModal() {
+                deleteConfirmModal.classList.add('hidden');
+                currentDeleteTarget = null;
+            }
+            
+            cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+            
+            confirmDeleteBtn.addEventListener('click', function() {
+                // Here you would handle the actual deletion
+                // For demo purposes, let's just close the modal
+                alert('Item deleted successfully!');
+                closeDeleteModal();
+            });
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-supervisor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    document.getElementById('supervisorModalTitle').textContent = 'Edit Supervisor';
+                    document.getElementById('supervisorId').value = id;
+                    // Here you would populate the form with existing data
+                    supervisorModal.classList.remove('hidden');
+                });
+            });
+            
+            document.querySelectorAll('.delete-supervisor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    // Get the supervisor name from the row
+                    const row = this.closest('tr');
+                    const name = row.querySelector('.text-sm.font-medium.text-gray-900').textContent;
+                    showDeleteConfirmation(id, 'supervisor', name);
+                });
+            });
+            
+            document.querySelectorAll('.edit-student').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    document.getElementById('studentModalTitle').textContent = 'Edit Student';
+                    document.getElementById('studentId').value = id;
+                    // Here you would populate the form with existing data
+                    studentModal.classList.remove('hidden');
+                });
+            });
+            
+            document.querySelectorAll('.delete-student').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    // Get the student name from the row
+                    const row = this.closest('tr');
+                    const name = row.querySelector('.text-sm.font-medium.text-gray-900').textContent;
+                    showDeleteConfirmation(id, 'student', name);
+                });
+            });
+            
+            document.querySelectorAll('.edit-program').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    document.getElementById('programModalTitle').textContent = 'Edit Program Template';
+                    document.getElementById('programId').value = id;
+                    // Here you would populate the form with existing data
+                    programModal.classList.remove('hidden');
+                });
+            });
+            
+            document.querySelectorAll('.delete-program').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    // Get the program name from the row
+                    const row = this.closest('tr');
+                    const name = row.querySelector('.text-sm.font-medium.text-gray-900').textContent;
+                    showDeleteConfirmation(id, 'program template', name);
+                });
+            });
+            
+            // Add milestone and document buttons
+            const addMilestoneBtn = document.getElementById('addMilestoneBtn');
+            const milestonesContainer = document.getElementById('milestonesContainer');
+            
+            addMilestoneBtn.addEventListener('click', function() {
+                const newMilestone = document.createElement('div');
+                newMilestone.className = 'milestone-item bg-gray-50 p-3 rounded border';
+                newMilestone.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <input type="text" placeholder="Milestone name" class="border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                        <button type="button" class="text-red-500 hover:text-red-700 remove-milestone">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700">Timeline</label>
+                            <div class="flex items-center">
+                                <input type="number" min="1" max="48" class="w-16 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                                <span class="ml-2 text-xs text-gray-500">months from start</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700">Required?</label>
+                            <select class="border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 w-full" required>
+                                <option value="required">Required</option>
+                                <option value="optional">Optional</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+                milestonesContainer.appendChild(newMilestone);
+                
+                // Add event listener to the new remove button
+                newMilestone.querySelector('.remove-milestone').addEventListener('click', function() {
+                    milestonesContainer.removeChild(newMilestone);
+                });
+            });
+            
+            // Add event listener to existing remove milestone buttons
+            document.querySelectorAll('.remove-milestone').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const milestoneItem = this.closest('.milestone-item');
+                    milestonesContainer.removeChild(milestoneItem);
+                });
+            });
+            
+            const addDocumentBtn = document.getElementById('addDocumentBtn');
+            const documentsContainer = document.getElementById('documentsContainer');
+            
+            addDocumentBtn.addEventListener('click', function() {
+                const newDocument = document.createElement('div');
+                newDocument.className = 'document-item flex items-center justify-between';
+                newDocument.innerHTML = `
+                    <div class="flex items-center">
+                        <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <input type="text" placeholder="Document name" class="ml-2 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <button type="button" class="text-red-500 hover:text-red-700 remove-document">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                documentsContainer.appendChild(newDocument);
+                
+                // Add event listener to the new remove button
+                newDocument.querySelector('.remove-document').addEventListener('click', function() {
+                    documentsContainer.removeChild(newDocument);
+                });
+            });
+            
+            // Add event listener to existing remove document buttons
+            document.querySelectorAll('.remove-document').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const documentItem = this.closest('.document-item');
+                    documentsContainer.removeChild(documentItem);
+                });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="./JS/supabaseClient.js"></script>
+    <script src="./JS/auth.js"></script>
+    <script src="./JS/script.js"></script>
+    <script src="./JS/admin.js"></script>
+  
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Submission | Supervision System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/thesis.js"></script>
+    <script src="js/script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Supervision System</h1>
+        </div>
+        <div class="user-info">
+            <span id="userNameDisplay">Student Name</span>
+            <div id="userAvatar" class="avatar"></div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="breadcrumb">
+            <a href="student.html">Dashboard</a> &gt; Thesis Submission
+        </div>
+        
+        <h2>Thesis Submission</h2>
+        <div id="formStatusDisplay" class="status-display">
+            <span class="status-label">Status:</span>
+            <span id="statusValue">Draft</span>
+        </div>
+        
+        <form id="thesisForm">
+            <div class="form-group">
+                <label for="thesisTitle">Thesis Title</label>
+                <input type="text" id="thesisTitle" name="thesisTitle" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="thesisAbstract">Abstract</label>
+                <textarea id="thesisAbstract" name="thesisAbstract" rows="6" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="thesisKeywords">Keywords (comma separated)</label>
+                <input type="text" id="thesisKeywords" name="thesisKeywords" required placeholder="e.g., machine learning, healthcare, ethics">
+            </div>
+            
+            <h3>Main Thesis File</h3>
+            <div class="main-file-upload">
+                <div class="upload-container" id="mainFileUploadContainer">
+                    <input type="file" id="mainFileUpload" accept=".pdf,.doc,.docx" required>
+                    <p>Drop your thesis file here or click to browse (PDF or Word format)</p>
+                </div>
+                <div id="mainFilePreview" class="file-preview hidden">
+                    <span id="mainFileName">No file selected</span>
+                    <button type="button" id="removeMainFile" class="icon-button">✖</button>
+                </div>
+            </div>
+            
+            <h3>Supporting Files (Optional)</h3>
+            <div class="supporting-files-upload">
+                <div class="upload-container" id="supportingFilesUploadContainer">
+                    <input type="file" id="supportingFilesUpload" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.zip" multiple>
+                    <p>Drop supporting files here or click to browse</p>
+                    <p class="upload-hint">You can upload data files, appendices, or supplementary materials</p>
+                </div>
+                <div id="filesListContainer" class="files-list">
+                    <p>No supporting files selected</p>
+                </div>
+            </div>
+            
+            <div class="declaration-container">
+                <h3>Declaration</h3>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="originalWorkDeclaration" required>
+                    <label for="originalWorkDeclaration">I declare that this thesis is my original work and has not been submitted elsewhere for any other degree or qualification</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="ethicsApprovalDeclaration" required>
+                    <label for="ethicsApprovalDeclaration">I confirm that all necessary ethics approvals have been obtained for this research</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="copyrightDeclaration" required>
+                    <label for="copyrightDeclaration">I understand that by submitting this thesis, I am giving the university the right to store and distribute it according to university policy</label>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" id="saveAsDraftBtn" class="secondary-button">Save as Draft</button>
+                <button type="submit" id="submitBtn" class="primary-button">Submit Thesis</button>
+            </div>
+        </form>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Supervision System</p>
+    </footer>
+</body>
+</html>

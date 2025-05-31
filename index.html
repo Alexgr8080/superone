@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Supervision System - Fix Package</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 5px solid #3498db;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner mb-4"></div>
+        <p id="loadingMessage" class="text-lg font-medium">Initializing System...</p>
+    </div>
+
+    <!-- Error Overlay -->
+    <div id="errorOverlay" class="loading-overlay hidden" style="background-color: rgba(255, 220, 220, 0.9);">
+        <div class="text-red-600 mb-4">
+            <i class="fas fa-exclamation-triangle fa-3x"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-red-700 mb-2">System Error</h2>
+        <p id="errorMessage" class="text-lg font-medium text-red-700 mb-4 text-center max-w-md">Error message will appear here</p>
+        <button id="retryButton" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition">Retry Connection</button>
+    </div>
+
+    <!-- Main Content Container -->
+    <div id="mainContainer" class="container mx-auto px-4 py-8 hidden">
+        <!-- Header Section -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Supervision System</h1>
+                <p id="academicYearDisplay" class="text-gray-600">Academic Year: 2024-2025</p>
+            </div>
+            <div class="flex items-center">
+                <div class="mr-6 text-right">
+                    <p id="userNameDisplay" class="font-semibold text-gray-800">Dr. Jane Doe</p>
+                    <p id="userRoleDisplay" class="text-sm text-gray-600">Supervisor</p>
+                </div>
+                <div class="bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center">
+                    <span id="userInitials">JD</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card bg-white p-6 rounded-lg shadow">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Total Students</p>
+                        <h2 id="totalStudentsCount" class="text-3xl font-bold">--</h2>
+                        <p id="studentsChange" class="text-xs text-gray-500 mt-1">-- from last month</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-users text-blue-500"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-lg shadow">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">On Track</p>
+                        <h2 id="onTrackCount" class="text-3xl font-bold">--</h2>
+                        <p id="onTrackChange" class="text-xs text-gray-500 mt-1">-- from last week</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-lg shadow">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Behind Schedule</p>
+                        <h2 id="behindScheduleCount" class="text-3xl font-bold">--</h2>
+                        <p id="behindScheduleChange" class="text-xs text-gray-500 mt-1">-- from last week</p>
+                    </div>
+                    <div class="bg-orange-100 p-3 rounded-full">
+                        <i class="fas fa-clock text-orange-500"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-lg shadow">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Needs Attention</p>
+                        <h2 id="needsAttentionCount" class="text-3xl font-bold">--</h2>
+                        <p id="needsAttentionChange" class="text-xs text-gray-500 mt-1">-- from last week</p>
+                    </div>
+                    <div class="bg-red-100 p-3 rounded-full">
+                        <i class="fas fa-exclamation-triangle text-red-500"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column -->
+            <div class="lg:col-span-2">
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Recent Activity</h2>
+                        <a href="#" class="text-blue-500 text-sm">View All</a>
+                    </div>
+                    <div id="recentActivityList" class="space-y-4">
+                        <div class="animate-pulse">
+                            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                            <div class="h-3 bg-gray-200 rounded w-1/4"></div>
+                        </div>
+                        <div class="animate-pulse">
+                            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                            <div class="h-3 bg-gray-200 rounded w-1/4"></div>
+                        </div>
+                        <div class="animate-pulse">
+                            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                            <div class="h-3 bg-gray-200 rounded w-1/4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Progress -->
+                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Student Progress</h2>
+                        <div>
+                            <select id="progressFilter" class="text-sm border rounded p-1">
+                                <option value="all">All Students</option>
+                                <option value="behind">Behind Schedule</option>
+                                <option value="attention">Needs Attention</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="studentProgressList" class="space-y-5">
+                        <div class="animate-pulse">
+                            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                            <div class="h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
+                            <div class="h-2 bg-gray-200 rounded w-full"></div>
+                        </div>
+                        <div class="animate-pulse">
+                            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                            <div class="h-3 bg-gray-200 rounded w-3/4 mb-2"></div>
+                            <div class="h-2 bg-gray-200 rounded w-full"></div>
+                        </div>
+                        <div class="animate-pulse">
+                            <div class="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+                            <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                            <div class="h-2 bg-gray-200 rounded w-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Stats -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Project Status Distribution</h2>
+                    <div class="h-64">
+                        <canvas id="projectStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <!-- Upcoming Deadlines/Meetings -->
+                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Upcoming Deadlines/Meetings</h2>
+                        <a href="#" class="text-blue-500 text-sm">View All</a>
+                    </div>
+                    <div id="upcomingEventsList" class="space-y-6">
+                        <div class="animate-pulse">
+                            <div class="flex">
+                                <div class="h-12 w-12 bg-gray-200 rounded mr-3"></div>
+                                <div class="flex-1">
+                                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                    <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="animate-pulse">
+                            <div class="flex">
+                                <div class="h-12 w-12 bg-gray-200 rounded mr-3"></div>
+                                <div class="flex-1">
+                                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                    <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="animate-pulse">
+                            <div class="flex">
+                                <div class="h-12 w-12 bg-gray-200 rounded mr-3"></div>
+                                <div class="flex-1">
+                                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                    <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+                    <div class="space-y-3">
+                        <button id="scheduleNewMeetingBtn" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center hover:bg-blue-600 transition">
+                            <i class="fas fa-calendar-plus mr-2"></i>
+                            Schedule New Meeting
+                        </button>
+                        <button id="reviewSubmissionBtn" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg flex items-center hover:bg-green-600 transition">
+                            <i class="fas fa-file-alt mr-2"></i>
+                            Review Submissions
+                        </button>
+                        <button id="viewReportsBtn" class="w-full bg-purple-500 text-white py-2 px-4 rounded-lg flex items-center hover:bg-purple-600 transition">
+                            <i class="fas fa-chart-bar mr-2"></i>
+                            View Reports
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Monthly Summary -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Monthly Summary</h2>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Meetings Conducted</span>
+                                <span id="meetingsConducted" class="font-medium">--/--</span>
+                            </div>
+                            <div class="bg-gray-200 rounded-full h-2">
+                                <div id="meetingsProgressBar" class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Submissions Reviewed</span>
+                                <span id="submissionsReviewed" class="font-medium">--/--</span>
+                            </div>
+                            <div class="bg-gray-200 rounded-full h-2">
+                                <div id="submissionsProgressBar" class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Student Check-ins</span>
+                                <span id="studentCheckins" class="font-medium">--/--</span>
+                            </div>
+                            <div class="bg-gray-200 rounded-full h-2">
+                                <div id="checkinsProgressBar" class="bg-purple-500 h-2 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Meeting Modal -->
+    <div id="scheduleMeetingModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Schedule New Meeting</h3>
+                <button class="close-modal text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="scheduleMeetingForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="studentSelect">
+                        Student
+                    </label>
+                    <select id="studentSelect" class="w-full border rounded px-3 py-2" required>
+                        <option value="">Select a student</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingDate">
+                        Date & Time
+                    </label>
+                    <input type="datetime-local" id="meetingDate" class="w-full border rounded px-3 py-2" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingDuration">
+                        Duration (minutes)
+                    </label>
+                    <input type="number" id="meetingDuration" class="w-full border rounded px-3 py-2" min="15" step="15" value="60" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingLocation">
+                        Location/Link
+                    </label>
+                    <input type="text" id="meetingLocation" class="w-full border rounded px-3 py-2" placeholder="Office or meeting URL" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingPurpose">
+                        Purpose
+                    </label>
+                    <textarea id="meetingPurpose" class="w-full border rounded px-3 py-2" rows="3" placeholder="Brief description of meeting purpose" required></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="close-modal bg-gray-300 text-gray-800 py-2 px-4 rounded mr-2 hover:bg-gray-400 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">
+                        Schedule Meeting
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="fixed bottom-4 right-4 max-w-xs bg-white rounded-lg shadow-lg p-4 hidden z-50 transition-opacity duration-300">
+        <div class="flex">
+            <div id="toastIcon" class="flex-shrink-0 w-6 h-6 mr-2">
+                <!-- Icon will be inserted dynamically -->
+            </div>
+            <div>
+                <h3 id="toastTitle" class="font-medium"></h3>
+                <p id="toastMessage" class="text-sm text-gray-600"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded Supabase Client Script -->
+    <script>
+        // Supabase Client Module
+        const SUPABASE_URL = 'https://clfnsthhfrjwqbeokckl.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsZm5zdGhoZnJqd3FiZW9rY2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwMjM1MzYsImV4cCI6MjA2MjU5OTUzNn0.012pMCsog50ci3LZognLkugYE-cci1rPXV0ThbKXnGI';
+        
+        let supabaseClient = null;
+        let connectionVerified = false;
+
+        // Modified initialization that doesn't rely on system_status table
+        async function initializeSupabaseClient() {
+            try {
+                if (supabaseClient !== null) {
+                    return supabaseClient;
+                }
+                
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                // Verify connection with a simple auth check instead of querying system_status
+                const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+                
+                if (sessionError) {
+                    console.error("Session error:", sessionError);
+                    throw sessionError;
+                }
+                
+                connectionVerified = true;
+                return supabaseClient;
+            } catch (error) {
+                console.error('Failed to initialize Supabase client:', error);
+                connectionVerified = false;
+                throw error;
+            }
+        }
+
+        // Auth module
+        const authModule = {
+            currentUser: null,
+            userProfile: null,
+            
+            async initialize() {
+                try {
+                    const client = await initializeSupabaseClient();
+                    const { data: { user }, error } = await client.auth.getUser();
+                    
+                    if (error) throw error;
+                    
+                    if (user) {
+                        this.currentUser = user;
+                        await this.loadUserProfile();
+                        return { user: this.currentUser, profile: this.userProfile };
+                    } else {
+                        // Redirect to login
+                        window.location.href = 'login.html';
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Auth initialization failed:', error);
+                    throw error;
+                }
+            },
+            
+            async loadUserProfile() {
+                try {
+                    if (!this.currentUser) return null;
+                    
+                    const client = await initializeSupabaseClient();
+                    
+                    // Load supervisor details first
+                    const { data: supervisorData, error: supervisorError } = await client
+                        .from('supervisor_details')
+                        .select('*')
+                        .eq('user_id', this.currentUser.id)
+                        .single();
+                        
+                    if (!supervisorError && supervisorData) {
+                        this.userProfile = supervisorData;
+                        return supervisorData;
+                    }
+                    
+                    // If not found in supervisor_details, check users table
+                    const { data: userData, error: userError } = await client
+                        .from('users')
+                        .select('*')
+                        .eq('id', this.currentUser.id)
+                        .single();
+                        
+                    if (userError) throw userError;
+                    
+                    this.userProfile = userData;
+                    return userData;
+                } catch (error) {
+                    console.error('Failed to load user profile:', error);
+                    return null;
+                }
+            },
+            
+            getUserInitials() {
+                if (!this.userProfile || !this.userProfile.full_name) return '--';
+                
+                const nameParts = this.userProfile.full_name.split(' ');
+                if (nameParts.length >= 2) {
+                    return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+                } else if (nameParts.length === 1) {
+                    return nameParts[0].substring(0, 2).toUpperCase();
+                }
+                return '--';
+            }
+        };
+
+        // Supervisor Dashboard Module
+        const supervisorDashboard = {
+            initialized: false,
+            students: [],
+            meetings: [],
+            activities: [],
+            notifications: [],
+            submissions: [],
+            
+            async initialize() {
+                try {
+                    showLoading('Initializing dashboard...');
+                    
+                    // Initialize auth first
+                    const authData = await authModule.initialize();
+                    if (!authData) {
+                        throw new Error('Authentication failed');
+                    }
+                    
+                    // Load all required data in parallel
+                    await Promise.all([
+                        this.loadStudents(),
+                        this.loadMeetings(),
+                        this.loadActivities(),
+                        this.loadNotifications(),
+                        this.loadSubmissions()
+                    ]);
+                    
+                    this.initialized = true;
+                    
+                    // Update UI
+                    this.updateDashboardUI();
+                    this.initializeCharts();
+                    this.setupEventListeners();
+                    
+                    // Show the main container
+                    document.getElementById('loadingOverlay').classList.add('hidden');
+                    document.getElementById('mainContainer').classList.remove('hidden');
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Dashboard initialization failed:', error);
+                    showError('Failed to initialize dashboard', error.message);
+                    return false;
+                }
+            },
+            
+            async loadStudents() {
+                try {
+                    const client = await initializeSupabaseClient();
+                    
+                    const { data, error } = await client
+                        .from('students')
+                        .select(`
+                            *,
+                            projects (*),
+                            student_supervisors!inner (*)
+                        `)
+                        .eq('student_supervisors.supervisor_id', authModule.userProfile.user_id);
+                        
+                    if (error) throw error;
+                    
+                    this.students = data || [];
+                    return this.students;
+                } catch (error) {
+                    console.error('Failed to load students:', error);
+                    return [];
+                }
+            },
+            
+            async loadMeetings() {
+                try {
+                    const client = await initializeSupabaseClient();
+                    
+                    // Use current date to filter upcoming meetings
+                    const now = new Date().toISOString();
+                    
+                    const { data, error } = await client
+                        .from('meetings')
+                        .select(`
+                            *,
+                            meeting_attendees (*)
+                        `)
+                        .eq('created_by', authModule.currentUser.id)
+                        .gte('scheduled_date_time', now)
+                        .order('scheduled_date_time', { ascending: true })
+                        .limit(10);
+                        
+                    if (error) throw error;
+                    
+                    this.meetings = data || [];
+                    return this.meetings;
+                } catch (error) {
+                    console.error('Failed to load meetings:', error);
+                    return [];
+                }
+            },
+            
+            async loadActivities() {
+                // This is a simplified implementation based on recent actions
+                // In a real system, you might have a dedicated activity log table
+                try {
+                    const client = await initializeSupabaseClient();
+                    
+                    // Get recent thesis submissions
+                    const { data: submissionData, error: submissionError } = await client
+                        .from('thesis_submissions')
+                        .select(`
+                            id, 
+                            title, 
+                            status, 
+                            submitted_at,
+                            students (full_name, email)
+                        `)
+                        .order('submitted_at', { ascending: false })
+                        .limit(5);
+                        
+                    // Get recent meetings
+                    const { data: meetingData, error: meetingError } = await client
+                        .from('meetings')
+                        .select(`
+                            id, 
+                            purpose, 
+                            status, 
+                            created_at, 
+                            scheduled_date_time
+                        `)
+                        .eq('created_by', authModule.currentUser.id)
+                        .order('created_at', { ascending: false })
+                        .limit(5);
+                    
+                    // Combine and sort activities
+                    let activities = [];
+                    
+                    if (submissionData) {
+                        activities = activities.concat(submissionData.map(sub => ({
+                            type: 'submission',
+                            title: `${sub.students ? sub.students.full_name : 'Student'} submitted thesis draft`,
+                            date: new Date(sub.submitted_at),
+                            id: sub.id
+                        })));
+                    }
+                    
+                    if (meetingData) {
+                        activities = activities.concat(meetingData.map(meet => ({
+                            type: 'meeting',
+                            title: `Meeting: ${meet.purpose}`,
+                            date: new Date(meet.created_at),
+                            status: meet.status,
+                            id: meet.id
+                        })));
+                    }
+                    
+                    // Sort by date
+                    activities.sort((a, b) => b.date - a.date);
+                    
+                    this.activities = activities.slice(0, 5);
+                    return this.activities;
+                } catch (error) {
+                    console.error('Failed to load activities:', error);
+                    return [];
+                }
+            },
+            
+            async loadNotifications() {
+                // Simulated notifications until a proper notifications table is added
+                this.notifications = [
+                    {
+                        id: 1,
+                        title: 'Deadline approaching',
+                        message: 'Ethics form submission due in 2 days',
+                        date: new Date(),
+                        read: false,
+                        priority: 'high'
+                    },
+                    {
+                        id: 2,
+                        title: 'New submission received',
+                        message: 'Emma Johnson submitted her thesis draft',
+                        date: new Date(Date.now() - 86400000), // Yesterday
+                        read: true,
+                        priority: 'medium'
+                    },
+                    {
+                        id: 3,
+                        title: 'Meeting reminder',
+                        message: 'Meeting with Michael Brown tomorrow at 10:00 AM',
+                        date: new Date(Date.now() - 172800000), // 2 days ago
+                        read: false,
+                        priority: 'medium'
+                    }
+                ];
+                return this.notifications;
+            },
+            
+            async loadSubmissions() {
+                try {
+                    const client = await initializeSupabaseClient();
+                    
+                    const { data, error } = await client
+                        .from('thesis_submissions')
+                        .select(`
+                            *,
+                            students (full_name, email, id)
+                        `)
+                        .is('supervisor_feedback', null)
+                        .eq('status', 'submitted')
+                        .order('submitted_at', { ascending: false });
+                        
+                    if (error) throw error;
+                    
+                    this.submissions = data || [];
+                    return this.submissions;
+                } catch (error) {
+                    console.error('Failed to load submissions:', error);
+                    return [];
+                }
+            },
+            
+            updateDashboardUI() {
+                // Update user info
+                document.getElementById('userNameDisplay').textContent = authModule.userProfile?.full_name || 'User';
+                document.getElementById('userInitials').textContent = authModule.getUserInitials();
+                
+                // Update stats
+                const studentCount = this.students.length;
+                document.getElementById('totalStudentsCount').textContent = studentCount;
+                document.getElementById('studentsChange').textContent = '2 from last month'; // Normally would be calculated
+                
+                // On track count
+                const onTrackCount = this.students.filter(student => 
+                    student.projects && student.projects.some(p => p.status === 'on_track')
+                ).length;
+                document.getElementById('onTrackCount').textContent = onTrackCount;
+                document.getElementById('onTrackChange').textContent = '1 from last week'; // Normally would be calculated
+                
+                // Behind schedule
+                const behindCount = this.students.filter(student => 
+                    student.projects && student.projects.some(p => p.status === 'behind_schedule')
+                ).length;
+                document.getElementById('behindScheduleCount').textContent = behindCount;
+                document.getElementById('behindScheduleChange').textContent = '1 from last week'; // Normally would be calculated
+                
+                // Needs attention
+                const attentionCount = this.students.filter(student => 
+                    student.projects && student.projects.some(p => p.status === 'needs_attention')
+                ).length;
+                document.getElementById('needsAttentionCount').textContent = attentionCount;
+                document.getElementById('needsAttentionChange').textContent = '0 from last week'; // Normally would be calculated
+                
+                // Update recent activities
+                this.updateRecentActivities();
+                
+                // Update student progress
+                this.updateStudentProgress();
+                
+                // Update upcoming events
+                this.updateUpcomingEvents();
+                
+                // Update monthly summary
+                this.updateMonthlySummary();
+                
+                // Populate student select for meeting modal
+                this.populateStudentSelect();
+            },
+            
+            updateRecentActivities() {
+                const activityList = document.getElementById('recentActivityList');
+                activityList.innerHTML = '';
+                
+                if (this.activities.length === 0) {
+                    activityList.innerHTML = '<p class="text-gray-500 italic">No recent activities.</p>';
+                    return;
+                }
+                
+                this.activities.forEach(activity => {
+                    const formattedDate = this.formatDate(activity.date);
+                    
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'border-l-4 border-blue-500 pl-3';
+                    
+                    activityItem.innerHTML = `
+                        <p class="font-medium">${activity.title}</p>
+                        <p class="text-sm text-gray-500">${formattedDate}</p>
+                    `;
+                    
+                    activityList.appendChild(activityItem);
+                });
+            },
+            
+            updateStudentProgress() {
+                const progressList = document.getElementById('studentProgressList');
+                progressList.innerHTML = '';
+                
+                if (this.students.length === 0) {
+                    progressList.innerHTML = '<p class="text-gray-500 italic">No students assigned.</p>';
+                    return;
+                }
+                
+                // Show only first 5 students
+                const studentsToShow = this.students.slice(0, 5);
+                
+                studentsToShow.forEach(student => {
+                    const project = student.projects?.[0]; // Get first project
+                    let progressPercentage = 0;
+                    let statusClass = 'bg-gray-500';
+                    
+                    if (project) {
+                        switch (project.status) {
+                            case 'on_track':
+                                statusClass = 'bg-green-500';
+                                progressPercentage = 65;
+                                break;
+                            case 'behind_schedule':
+                                statusClass = 'bg-orange-500';
+                                progressPercentage = 40;
+                                break;
+                            case 'needs_attention':
+                                statusClass = 'bg-red-500';
+                                progressPercentage = 25;
+                                break;
+                            case 'completed':
+                                statusClass = 'bg-blue-500';
+                                progressPercentage = 100;
+                                break;
+                            default:
+                                statusClass = 'bg-gray-500';
+                                progressPercentage = 10;
+                        }
+                    }
+                    
+                    const progressItem = document.createElement('div');
+                    progressItem.innerHTML = `
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">${student.full_name}</span>
+                            <span>${progressPercentage}%</span>
+                        </div>
+                        <div class="text-sm text-gray-500 mb-1">${project ? project.title : 'No project'}</div>
+                        <div class="bg-gray-200 rounded-full h-2.5 mb-4">
+                            <div class="${statusClass} h-2.5 rounded-full progress-bar" style="width: ${progressPercentage}%"></div>
+                        </div>
+                    `;
+                    
+                    progressList.appendChild(progressItem);
+                });
+            },
+            
+            updateUpcomingEvents() {
+                const eventsList = document.getElementById('upcomingEventsList');
+                eventsList.innerHTML = '';
+                
+                if (this.meetings.length === 0) {
+                    eventsList.innerHTML = '<p class="text-gray-500 italic">No upcoming meetings or deadlines.</p>';
+                    return;
+                }
+                
+                // Show only first 3 meetings
+                const meetingsToShow = this.meetings.slice(0, 3);
+                
+                meetingsToShow.forEach(meeting => {
+                    const meetingDate = new Date(meeting.scheduled_date_time);
+                    const formattedDate = this.formatDate(meetingDate, true);
+                    const daysDiff = this.getDaysDifference(meetingDate);
+                    
+                    let dayLabel;
+                    if (daysDiff === 0) {
+                        dayLabel = 'Today';
+                    } else if (daysDiff === 1) {
+                        dayLabel = 'Tomorrow';
+                    } else {
+                        dayLabel = `In ${daysDiff} days`;
+                    }
+                    
+                    const eventItem = document.createElement('div');
+                    eventItem.className = 'flex items-start';
+                    
+                    // Format date as DD MMM
+                    const dateFormatter = new Intl.DateTimeFormat('en', { day: '2-digit', month: 'short' });
+                    const shortDate = dateFormatter.format(meetingDate).toUpperCase();
+                    
+                    eventItem.innerHTML = `
+                        <div class="flex-shrink-0 bg-blue-100 text-blue-800 text-xs font-medium px-3 py-2 rounded-lg text-center mr-4 w-16">
+                            <span class="block font-bold">${shortDate.split(' ')[0]}</span>
+                            <span class="block">${shortDate.split(' ')[1]}</span>
+                        </div>
+                        <div>
+                            <div class="font-medium">${meeting.purpose}</div>
+                            <div class="text-sm text-gray-500">${this.formatTime(meetingDate)} • ${meeting.duration_minutes} min</div>
+                            <div class="text-sm mt-1 text-blue-600">${dayLabel}</div>
+                        </div>
+                    `;
+                    
+                    eventsList.appendChild(eventItem);
+                });
+            },
+            
+            updateMonthlySummary() {
+                // These would normally be calculated from actual data
+                // For now we'll use simulated values
+                
+                // Meetings conducted
+                const meetingsConducted = 8;
+                const meetingsTarget = 12;
+                const meetingsPercentage = (meetingsConducted / meetingsTarget) * 100;
+                
+                document.getElementById('meetingsConducted').textContent = `${meetingsConducted}/${meetingsTarget}`;
+                document.getElementById('meetingsProgressBar').style.width = `${meetingsPercentage}%`;
+                
+                // Submissions reviewed
+                const submissionsReviewed = 5;
+                const submissionsTarget = 10;
+                const submissionsPercentage = (submissionsReviewed / submissionsTarget) * 100;
+                
+                document.getElementById('submissionsReviewed').textContent = `${submissionsReviewed}/${submissionsTarget}`;
+                document.getElementById('submissionsProgressBar').style.width = `${submissionsPercentage}%`;
+                
+                // Student check-ins
+                const checkinsCompleted = 15;
+                const checkinsTarget = 20;
+                const checkinsPercentage = (checkinsCompleted / checkinsTarget) * 100;
+                
+                document.getElementById('studentCheckins').textContent = `${checkinsCompleted}/${checkinsTarget}`;
+                document.getElementById('checkinsProgressBar').style.width = `${checkinsPercentage}%`;
+            },
+            
+            initializeCharts() {
+                // Project status chart
+                const statusCounts = {
+                    'on_track': 0,
+                    'behind_schedule': 0,
+                    'needs_attention': 0,
+                    'completed': 0,
+                    'not_started': 0
+                };
+                
+                // Count projects by status
+                this.students.forEach(student => {
+                    if (student.projects && student.projects.length > 0) {
+                        student.projects.forEach(project => {
+                            if (project.status in statusCounts) {
+                                statusCounts[project.status]++;
+                            } else {
+                                statusCounts.not_started++;
+                            }
+                        });
+                    }
+                });
+                
+                const statusLabels = {
+                    'on_track': 'On Track',
+                    'behind_schedule': 'Behind Schedule',
+                    'needs_attention': 'Needs Attention',
+                    'completed': 'Completed',
+                    'not_started': 'Not Started'
+                };
+                
+                const statusColors = {
+                    'on_track': '#10B981', // green-500
+                    'behind_schedule': '#F97316', // orange-500
+                    'needs_attention': '#EF4444', // red-500
+                    'completed': '#3B82F6', // blue-500
+                    'not_started': '#6B7280' // gray-500
+                };
+                
+                const ctx = document.getElementById('projectStatusChart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(statusCounts).map(key => statusLabels[key]),
+                        datasets: [{
+                            data: Object.values(statusCounts),
+                            backgroundColor: Object.keys(statusCounts).map(key => statusColors[key]),
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            },
+            
+            setupEventListeners() {
+                // Schedule meeting button
+                document.getElementById('scheduleNewMeetingBtn').addEventListener('click', () => {
+                    document.getElementById('scheduleMeetingModal').classList.remove('hidden');
+                });
+                
+                // Close modal buttons
+                document.querySelectorAll('.close-modal').forEach(button => {
+                    button.addEventListener('click', () => {
+                        document.getElementById('scheduleMeetingModal').classList.add('hidden');
+                    });
+                });
+                
+                // Meeting form submission
+                document.getElementById('scheduleMeetingForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.handleScheduleMeeting();
+                });
+                
+                // Progress filter
+                document.getElementById('progressFilter').addEventListener('change', (e) => {
+                    const filterValue = e.target.value;
+                    this.filterStudentProgress(filterValue);
+                });
+                
+                // Retry button for connection errors
+                document.getElementById('retryButton').addEventListener('click', async () => {
+                    document.getElementById('errorOverlay').classList.add('hidden');
+                    document.getElementById('loadingOverlay').classList.remove('hidden');
+                    await this.initialize();
+                });
+            },
+            
+            populateStudentSelect() {
+                const studentSelect = document.getElementById('studentSelect');
+                studentSelect.innerHTML = '<option value="">Select a student</option>';
+                
+                this.students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = student.full_name;
+                    studentSelect.appendChild(option);
+                });
+            },
+            
+            filterStudentProgress(filterValue) {
+                let filteredStudents;
+                
+                switch(filterValue) {
+                    case 'behind':
+                        filteredStudents = this.students.filter(student => 
+                            student.projects && student.projects.some(p => p.status === 'behind_schedule')
+                        );
+                        break;
+                    case 'attention':
+                        filteredStudents = this.students.filter(student => 
+                            student.projects && student.projects.some(p => p.status === 'needs_attention')
+                        );
+                        break;
+                    default:
+                        filteredStudents = this.students;
+                }
+                
+                const progressList = document.getElementById('studentProgressList');
+                progressList.innerHTML = '';
+                
+                if (filteredStudents.length === 0) {
+                    progressList.innerHTML = '<p class="text-gray-500 italic">No students match the selected filter.</p>';
+                    return;
+                }
+                
+                // Show only first 5 filtered students
+                const studentsToShow = filteredStudents.slice(0, 5);
+                
+                studentsToShow.forEach(student => {
+                    const project = student.projects?.[0]; // Get first project
+                    let progressPercentage = 0;
+                    let statusClass = 'bg-gray-500';
+                    
+                    if (project) {
+                        switch (project.status) {
+                            case 'on_track':
+                                statusClass = 'bg-green-500';
+                                progressPercentage = 65;
+                                break;
+                            case 'behind_schedule':
+                                statusClass = 'bg-orange-500';
+                                progressPercentage = 40;
+                                break;
+                            case 'needs_attention':
+                                statusClass = 'bg-red-500';
+                                progressPercentage = 25;
+                                break;
+                            case 'completed':
+                                statusClass = 'bg-blue-500';
+                                progressPercentage = 100;
+                                break;
+                            default:
+                                statusClass = 'bg-gray-500';
+                                progressPercentage = 10;
+                        }
+                    }
+                    
+                    const progressItem = document.createElement('div');
+                    progressItem.innerHTML = `
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">${student.full_name}</span>
+                            <span>${progressPercentage}%</span>
+                        </div>
+                        <div class="text-sm text-gray-500 mb-1">${project ? project.title : 'No project'}</div>
+                        <div class="bg-gray-200 rounded-full h-2.5 mb-4">
+                            <div class="${statusClass} h-2.5 rounded-full progress-bar" style="width: ${progressPercentage}%"></div>
+                        </div>
+                    `;
+                    
+                    progressList.appendChild(progressItem);
+                });
+            },
+            
+            async handleScheduleMeeting() {
+                try {
+                    const studentId = document.getElementById('studentSelect').value;
+                    const meetingDate = document.getElementById('meetingDate').value;
+                    const meetingDuration = document.getElementById('meetingDuration').value;
+                    const meetingLocation = document.getElementById('meetingLocation').value;
+                    const meetingPurpose = document.getElementById('meetingPurpose').value;
+                    
+                    if (!studentId || !meetingDate || !meetingDuration || !meetingLocation || !meetingPurpose) {
+                        showToast('Error', 'All fields are required', 'error');
+                        return;
+                    }
+                    
+                    // Find supervision ID for this student
+                    const student = this.students.find(s => s.id === studentId);
+                    let supervisionId = null;
+                    
+                    if (student && student.projects && student.projects.length > 0) {
+                        // Get first project's supervision ID
+                        const projectId = student.projects[0].id;
+                        
+                        // Query supervisions table to get supervision ID
+                        const client = await initializeSupabaseClient();
+                        const { data, error } = await client
+                            .from('supervisions')
+                            .select('id')
+                            .eq('project_id', projectId)
+                            .single();
+                            
+                        if (error) throw error;
+                        
+                        if (data) {
+                            supervisionId = data.id;
+                        }
+                    }
+                    
+                    // Create meeting record
+                    const client = await initializeSupabaseClient();
+                    const { data, error } = await client
+                        .from('meetings')
+                        .insert([
+                            {
+                                supervision_id: supervisionId,
+                                scheduled_date_time: new Date(meetingDate).toISOString(),
+                                duration_minutes: parseInt(meetingDuration),
+                                location_or_link: meetingLocation,
+                                purpose: meetingPurpose,
+                                status: 'scheduled',
+                                created_by: authModule.currentUser.id
+                            }
+                        ])
+                        .select();
+                        
+                    if (error) throw error;
+                    
+                    if (data && data.length > 0) {
+                        const meetingId = data[0].id;
+                        
+                        // Add meeting attendees
+                        const { error: attendeeError } = await client
+                            .from('meeting_attendees')
+                            .insert([
+                                {
+                                    meeting_id: meetingId,
+                                    student_id: studentId,
+                                    attendance_status: 'invited'
+                                }
+                            ]);
+                            
+                        if (attendeeError) throw attendeeError;
+                        
+                        // Close modal and show success message
+                        document.getElementById('scheduleMeetingModal').classList.add('hidden');
+                        document.getElementById('scheduleMeetingForm').reset();
+                        
+                        showToast('Success', 'Meeting scheduled successfully', 'success');
+                        
+                        // Reload meetings data and update UI
+                        await this.loadMeetings();
+                        this.updateUpcomingEvents();
+                    }
+                } catch (error) {
+                    console.error('Failed to schedule meeting:', error);
+                    showToast('Error', 'Failed to schedule meeting', 'error');
+                }
+            },
+            
+            // Helper functions
+            formatDate(date, includeTime = false) {
+                if (!date) return '';
+                
+                const options = { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric'
+                };
+                
+                if (includeTime) {
+                    options.hour = '2-digit';
+                    options.minute = '2-digit';
+                    options.hour12 = true;
+                }
+                
+                return new Date(date).toLocaleDateString('en-US', options);
+            },
+            
+            formatTime(date) {
+                if (!date) return '';
+                
+                const options = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                };
+                
+                return new Date(date).toLocaleTimeString('en-US', options);
+            },
+            
+            getDaysDifference(date) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const targetDate = new Date(date);
+                targetDate.setHours(0, 0, 0, 0);
+                
+                const diffTime = targetDate.getTime() - today.getTime();
+                return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            }
+        };
+
+        // Utility functions
+        function showLoading(message) {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+        
+        function showError(title, message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            document.getElementById('errorOverlay').classList.remove('hidden');
+        }
+        
+        function showToast(title, message, type = 'info') {
+            const toast = document.getElementById('notificationToast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            // Set icon based on type
+            let iconClass = 'fas fa-info-circle text-blue-500';
+            
+            if (type === 'success') {
+                iconClass = 'fas fa-check-circle text-green-500';
+            } else if (type === 'error') {
+                iconClass = 'fas fa-exclamation-circle text-red-500';
+            } else if (type === 'warning') {
+                iconClass = 'fas fa-exclamation-triangle text-orange-500';
+            }
+            
+            toastIcon.innerHTML = `<i class="${iconClass}"></i>`;
+            
+            // Show toast
+            toast.classList.remove('hidden');
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+                
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await supervisorDashboard.initialize();
+            } catch (error) {
+                console.error('Failed to initialize application:', error);
+                showError('Application Error', 'Failed to initialize the application. Please reload the page or contact support.');
+            }
+        });
+    </script>
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="./JS/supabaseClient.js"></script>
+    <script src="./JS/supabaseClient.js"></script>
+     <script src="./JS/student.js"></script>
+    <script src="./JS/auth.js"></script>
+    <script src="./JS/script.js"></script>
+   
+</body>
+</html>
+        
+

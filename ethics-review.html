@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethics Review | Supervision System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ethics-review.js"></script>
+    <script src="js/script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Supervision System</h1>
+        </div>
+        <div class="user-info">
+            <span id="userNameDisplay">Supervisor Name</span>
+            <div id="userAvatar" class="avatar"></div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="breadcrumb">
+            <a href="index.html">Dashboard</a> &gt; Ethics Review
+        </div>
+        
+        <h2 id="formTitleDisplay">Ethics Form Review</h2>
+        
+        <div class="review-metadata">
+            <div class="metadata-item">
+                <span class="metadata-label">Student:</span>
+                <span id="studentNameDisplay">--</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">Status:</span>
+                <span id="formStatusDisplay">--</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">Submitted:</span>
+                <span id="formSubmittedDateDisplay">--</span>
+            </div>
+        </div>
+        
+        <div class="review-container">
+            <div id="formContentContainer" class="form-content">
+                <h3>Form Content Loading...</h3>
+                <div class="loading-spinner"></div>
+            </div>
+            
+            <div class="attachments-section">
+                <h3>Attached Documents</h3>
+                <div id="attachmentsContainer" class="attachments-list">
+                    <p>Loading attachments...</p>
+                </div>
+            </div>
+            
+            <div class="feedback-section">
+                <h3>Feedback</h3>
+                <textarea id="feedbackTextarea" rows="5" placeholder="Enter your feedback or comments here..."></textarea>
+                
+                <div class="review-actions">
+                    <button id="backToListBtn" class="secondary-button">Back to List</button>
+                    <button id="requestChangesBtn" class="warning-button">Request Changes</button>
+                    <button id="approveBtn" class="primary-button">Approve</button>
+                </div>
+            </div>
+            
+            <div class="history-section">
+                <h3>Review History</h3>
+                <div id="historyContainer" class="history-list">
+                    <p>Loading review history...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Supervision System</p>
+    </footer>
+</body>
+</html>

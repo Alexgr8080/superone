@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethics Form | Supervision System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ethics-form.js"></script>
+    <script src="js/script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Supervision System</h1>
+        </div>
+        <div class="user-info">
+            <span id="userNameDisplay">Student Name</span>
+            <div id="userAvatar" class="avatar"></div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="breadcrumb">
+            <a href="student.html">Dashboard</a> &gt; Ethics Form
+        </div>
+        
+        <h2>Ethics Form Submission</h2>
+        <div id="formStatusDisplay" class="status-display">
+            <span class="status-label">Status:</span>
+            <span id="statusValue">Draft</span>
+        </div>
+        
+        <form id="ethicsForm">
+            <div class="form-group">
+                <label for="projectTitle">Project Title</label>
+                <input type="text" id="projectTitle" name="projectTitle" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="projectDescription">Project Description</label>
+                <textarea id="projectDescription" name="projectDescription" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="dataCollectionMethod">Data Collection Methods</label>
+                <textarea id="dataCollectionMethod" name="dataCollectionMethod" rows="3" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="participantType">Participant Type</label>
+                <input type="text" id="participantType" name="participantType" required placeholder="e.g., Adults, Students, Vulnerable groups">
+            </div>
+            
+            <div class="form-group">
+                <label for="ethicalConsiderations">Ethical Considerations</label>
+                <textarea id="ethicalConsiderations" name="ethicalConsiderations" rows="3" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Risk Level</label>
+                <div class="radio-group">
+                    <input type="radio" id="lowRisk" name="riskLevel" value="low" required>
+                    <label for="lowRisk">Low</label>
+                    
+                    <input type="radio" id="mediumRisk" name="riskLevel" value="medium">
+                    <label for="mediumRisk">Medium</label>
+                    
+                    <input type="radio" id="highRisk" name="riskLevel" value="high">
+                    <label for="highRisk">High</label>
+                </div>
+            </div>
+            
+            <h3>Required Documents</h3>
+            <div id="requiredDocumentsContainer">
+                <div class="document-upload-box" id="participant_information">
+                    <h4>Participant Information Sheet</h4>
+                    <input type="file" class="document-upload" id="upload_participant_information" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+                
+                <div class="document-upload-box" id="consent_form">
+                    <h4>Consent Form</h4>
+                    <input type="file" class="document-upload" id="upload_consent_form" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+                
+                <div class="document-upload-box" id="recruitment_material">
+                    <h4>Recruitment Materials</h4>
+                    <input type="file" class="document-upload" id="upload_recruitment_material" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+                
+                <div class="document-upload-box" id="data_collection_instruments">
+                    <h4>Data Collection Instruments</h4>
+                    <input type="file" class="document-upload" id="upload_data_collection_instruments" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+                
+                <div class="document-upload-box" id="risk_assessment">
+                    <h4>Risk Assessment Form</h4>
+                    <input type="file" class="document-upload" id="upload_risk_assessment" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+                
+                <div class="document-upload-box" id="data_management_plan">
+                    <h4>Data Management Plan</h4>
+                    <input type="file" class="document-upload" id="upload_data_management_plan" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+                
+                <div class="document-upload-box" id="research_protocol">
+                    <h4>Research Protocol</h4>
+                    <input type="file" class="document-upload" id="upload_research_protocol" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+            </div>
+            
+            <h3>Optional Documents</h3>
+            <div id="optionalDocumentsContainer">
+                <div class="document-upload-box" id="evidence_permissions">
+                    <h4>Evidence of External Permissions</h4>
+                    <input type="file" class="document-upload" id="upload_evidence_permissions" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+                
+                <div class="document-upload-box" id="funding_information">
+                    <h4>Funding Information</h4>
+                    <input type="file" class="document-upload" id="upload_funding_information" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+                
+                <div class="document-upload-box" id="other_documents">
+                    <h4>Other Supporting Documents</h4>
+                    <input type="file" class="document-upload" id="upload_other_documents" accept=".doc,.docx,.pdf">
+                    <div class="upload-status">No file uploaded</div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" id="saveAsDraftBtn" class="secondary-button">Save as Draft</button>
+                <button type="button" id="submitForReviewBtn" class="primary-button">Submit for Review</button>
+            </div>
+        </form>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Supervision System</p>
+    </footer>
+</body>
+</html>

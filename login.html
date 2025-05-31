@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Supervision System - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9fafb; /* Tailwind gray-50 */
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); /* Tailwind blue-500 to blue-800 */
+        }
+        .gradient-form-header {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); /* Tailwind blue-600 to blue-500 */
+        }
+        .shadow-card-enhanced {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .auth-message {
+            display: none;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            font-weight: 500;
+            border-width: 1px;
+        }
+        .auth-success {
+            background-color: #d1fae5; /* Tailwind green-100 */
+            border-color: #34d399; /* Tailwind green-400 */
+            color: #065f46; /* Tailwind green-800 */
+        }
+        .auth-failed {
+            background-color: #fee2e2; /* Tailwind red-100 */
+            border-color: #f87171; /* Tailwind red-400 */
+            color: #991b1b; /* Tailwind red-800 */
+        }
+         .auth-info { /* For general info like password reset sent */
+            background-color: #eff6ff; /* Tailwind blue-50 */
+            border-color: #60a5fa; /* Tailwind blue-400 */
+            color: #1e40af; /* Tailwind blue-800 */
+        }
+        .btn-primary-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        .btn-primary-gradient:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        .btn-disabled-style {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+        .reset-container {
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="login.html" class="flex items-center"> <i class="fas fa-graduation-cap text-4xl text-blue-600 mr-3"></i>
+                <h1 class="text-3xl font-semibold text-gray-800">Academic Supervision System</h1>
+            </a>
+            <div>
+                <a href="help-and-contact.html" class="text-gray-600 hover:text-blue-600 mx-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors">Help</a>
+                <a href="help-and-contact.html#contact" class="text-gray-600 hover:text-blue-600 mx-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <section class="gradient-hero text-white py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Welcome!</h2>
+                <p class="text-xl md:text-2xl mb-10 opacity-90">Log in or reset your password to continue.</p>
+            </div>
+        </section>
+
+        <section id="auth-section" class="py-12 md:py-16 bg-gray-100">
+            <div class="container mx-auto px-6">
+                <div id="login-container" class="max-w-lg mx-auto bg-white rounded-xl shadow-card-enhanced overflow-hidden">
+                    <div class="gradient-form-header py-5">
+                        <h2 class="text-2xl font-bold text-center text-white">Secure Portal Login</h2>
+                    </div>
+
+                    <div class="p-8 md:p-10">
+                        <div id="login-message" class="auth-message"></div>
+
+                        <form id="login-form" class="space-y-6">
+                            <div>
+                                <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-envelope text-gray-400"></i>
+                                    </div>
+                                    <input type="email" id="email" name="email" class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="your.email@university.edu" required>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label for="password" class="block text-gray-700 font-medium">Password</label>
+                                    <a href="#" id="forgot-password-link" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">Forgot password?</a>
+                                </div>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-lock text-gray-400"></i>
+                                    </div>
+                                    <input type="password" id="password" name="password" class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="signInButton" class="w-full btn-primary-gradient text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out transform hover:scale-105">
+                                Sign In
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="reset-request-container" class="reset-container max-w-lg mx-auto bg-white rounded-xl shadow-card-enhanced overflow-hidden mt-8 md:mt-0">
+                    <div class="gradient-form-header py-5">
+                        <h2 class="text-2xl font-bold text-center text-white">Reset Password</h2>
+                    </div>
+                    <div class="p-8 md:p-10">
+                        <div id="reset-request-message" class="auth-message"></div>
+                        <form id="reset-request-form" class="space-y-6">
+                            <div>
+                                <label for="reset-email" class="block text-gray-700 font-medium mb-2">Enter your account's email address</label>
+                                 <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-envelope text-gray-400"></i>
+                                    </div>
+                                    <input type="email" id="reset-email" name="reset-email" class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="your.email@university.edu" required>
+                                </div>
+                            </div>
+                            <button type="submit" id="sendResetLinkButton" class="w-full btn-primary-gradient text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out transform hover:scale-105">
+                                Send Password Reset Link
+                            </button>
+                        </form>
+                        <div class="mt-6 text-center">
+                            <a href="#" id="back-to-login-link" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">&larr; Back to Login</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-4 space-x-2">
+                <a href="terms-of-service.html" class="text-gray-400 hover:text-white hover:underline">Terms of Service</a>
+                <span class="text-gray-500">|</span>
+                <a href="privacy-policy.html" class="text-gray-400 hover:text-white hover:underline">Privacy Policy</a>
+                <span class="text-gray-500">|</span>
+                <a href="help-and-contact.html#contact" class="text-gray-400 hover:text-white hover:underline">Contact Support</a>
+            </div>
+            <p class="text-gray-400 text-sm">&copy; <span id="currentYear"></span> University Academic Supervision System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/events.js"></script> 
+    <script src="js/script.js"></script> 
+ <script type="module" src="js/supabaseClient.js"></script>
+<script type="module" src="js/auth.js"></script>>
+    <script>
+        // Utility functions for showing messages on this page
+        function showAuthMessage(elementId, message, type) {
+            const messageElement = document.getElementById(elementId);
+            if (messageElement) {
+                messageElement.textContent = message;
+                messageElement.className = 'auth-message'; // Reset classes
+                switch (type) {
+                    case 'success':
+                        messageElement.classList.add('auth-success');
+                        break;
+                    case 'error':
+                        messageElement.classList.add('auth-failed');
+                        break;
+                    case 'info':
+                        messageElement.classList.add('auth-info');
+                        break;
+                }
+                messageElement.style.display = 'block';
+
+                // Auto-hide after 7 seconds for non-error messages
+                if (type !== 'error') {
+                    setTimeout(() => {
+                        messageElement.style.display = 'none';
+                    }, 7000);
+                }
+            }
+        }
+
+        function redirectUser(user, orgData) {
+            // Ensure PathConfig is loaded
+            if (!window.PathConfig) {
+                console.error("PathConfig not loaded. Cannot redirect.");
+                showAuthMessage('login-message', 'System configuration error. Cannot redirect.', 'error');
+                return;
+            }
+
+            const roles = orgData && orgData.roles ? orgData.roles.map(r => r.name?.toLowerCase()) : [];
+
+            if (roles.includes('admin') || roles.includes('administrator')) {
+                window.location.href = PathConfig.ADMIN_DASHBOARD;
+            } else if (roles.includes('student')) {
+                window.location.href = PathConfig.STUDENT_DASHBOARD;
+            } else if (roles.includes('supervisor')) {
+                window.location.href = PathConfig.SUPERVISOR_DASHBOARD;
+            } else if (roles.includes('committee') || roles.includes('committee member')) {
+                window.location.href = PathConfig.COMMITTEE_DASHBOARD;
+            } else if (roles.includes('marker')) {
+                window.location.href = PathConfig.MARKERS;
+            } else {
+                console.warn('User has no specific dashboard role. Redirecting to a generic page or index.');
+                showAuthMessage('login-message', 'Login successful, but no specific role dashboard found. Contact support if this is an error.', 'info');
+                // setTimeout(() => { window.location.href = PathConfig.INDEX || '/index.html'; }, 3000);
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            const loginForm = document.getElementById('login-form');
+            const signInButton = document.getElementById('signInButton');
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const loginContainer = document.getElementById('login-container');
+            const resetRequestContainer = document.getElementById('reset-request-container');
+            const resetRequestForm = document.getElementById('reset-request-form');
+            const sendResetLinkButton = document.getElementById('sendResetLinkButton');
+            const backToLoginLink = document.getElementById('back-to-login-link');
+
+            // Initialize auth module and check current session
+            if (window.authModule && typeof window.authModule.initialize === 'function') {
+                window.authModule.initialize()
+                    .then(authResult => {
+                        if (authResult && authResult.user) {
+                            console.log('User already authenticated, redirecting to dashboard.');
+                            redirectUser(authResult.user, authResult.organization);
+                        } else {
+                           console.log('No active session or auth module not ready, user needs to log in.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error during auth initialization on login page:", error);
+                        showAuthMessage('login-message', `Auth system error: ${error.message}. Please try refreshing.`, 'error');
+                    });
+            } else {
+                console.error("authModule or its initialize function is not available.");
+                showAuthMessage('login-message', 'Authentication system failed to load. Please refresh the page.', 'error');
+            }
+            
+            // Handle Auth State Changes (e.g., after successful login elsewhere or session restoration)
+             window.addEventListener(AuthModuleEventsGlobal.AUTH_STATE_CHANGED, (event) => {
+                const { user, organization } = event.detail || {};
+                if (event.detail.event === 'SIGNED_IN' && user) {
+                     if (!window.location.pathname.includes(PathConfig.LOGIN)) { // Avoid redirect loop if already redirecting
+                        redirectUser(user, organization);
+                    }
+                }
+            });
+
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    
+                    signInButton.disabled = true;
+                    signInButton.textContent = 'Signing In...';
+                    signInButton.classList.add('btn-disabled-style');
+
+                    if (window.authModule && typeof window.authModule.loginWithEmailPassword === 'function') {
+                        try {
+                            const result = await window.authModule.loginWithEmailPassword(email, password);
+                            if (result.success && result.user) {
+                                showAuthMessage('login-message', 'Login successful! Redirecting...', 'success');
+                                // Redirection will be handled by onAuthStateChange listener or app.js
+                            } else {
+                                showAuthMessage('login-message', result.error || 'Login failed. Please check your credentials.', 'error');
+                            }
+                        } catch (error) {
+                            console.error('Login submission error:', error);
+                            showAuthMessage('login-message', `An unexpected error occurred: ${error.message}`, 'error');
+                        } finally {
+                            signInButton.disabled = false;
+                            signInButton.textContent = 'Sign In';
+                            signInButton.classList.remove('btn-disabled-style');
+                        }
+                    } else {
+                        showAuthMessage('login-message', 'Login service is not available. Please refresh.', 'error');
+                        signInButton.disabled = false;
+                        signInButton.textContent = 'Sign In';
+                        signInButton.classList.remove('btn-disabled-style');
+                    }
+                });
+            }
+
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    loginContainer.style.display = 'none';
+                    resetRequestContainer.style.display = 'block';
+                    document.getElementById('login-message').style.display = 'none'; // Hide login messages
+                });
+            }
+
+            if (backToLoginLink) {
+                backToLoginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    resetRequestContainer.style.display = 'none';
+                    loginContainer.style.display = 'block';
+                     document.getElementById('reset-request-message').style.display = 'none'; // Hide reset messages
+                });
+            }
+
+            if (resetRequestForm) {
+                resetRequestForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    const email = document.getElementById('reset-email').value;
+
+                    sendResetLinkButton.disabled = true;
+                    sendResetLinkButton.textContent = 'Sending...';
+                    sendResetLinkButton.classList.add('btn-disabled-style');
+
+                    if (window.authModule && typeof window.authModule.sendPasswordResetEmail === 'function') {
+                        try {
+                            const result = await window.authModule.sendPasswordResetEmail(email);
+                            if (result.success) {
+                                showAuthMessage('reset-request-message', 'Password reset link sent! Please check your email (including spam folder).', 'info');
+                                resetRequestForm.reset();
+                            } else {
+                                showAuthMessage('reset-request-message', result.error || 'Failed to send reset link.', 'error');
+                            }
+                        } catch (error) {
+                            console.error('Password reset request error:', error);
+                            showAuthMessage('reset-request-message', `An error occurred: ${error.message}`, 'error');
+                        } finally {
+                            sendResetLinkButton.disabled = false;
+                            sendResetLinkButton.textContent = 'Send Password Reset Link';
+                            sendResetLinkButton.classList.remove('btn-disabled-style');
+                        }
+                    } else {
+                        showAuthMessage('reset-request-message', 'Password reset service is not available. Please refresh.', 'error');
+                        sendResetLinkButton.disabled = false;
+                        sendResetLinkButton.textContent = 'Send Password Reset Link';
+                        sendResetLinkButton.classList.remove('btn-disabled-style');
+                    }
+                });
+            }
+            
+            // Display messages from URL params (e.g., after password reset confirmation)
+            const urlParams = new URLSearchParams(window.location.search);
+            const successMessage = urlParams.get('success');
+            const errorMessage = urlParams.get('error');
+
+            if (successMessage) {
+                showAuthMessage('login-message', decodeURIComponent(successMessage), 'success');
+                // Clean the URL
+                if (window.history.replaceState) {
+                    const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    window.history.replaceState({path:cleanUrl}, '', cleanUrl);
+                }
+            }
+            if (errorMessage) {
+                showAuthMessage('login-message', decodeURIComponent(errorMessage), 'error');
+                 if (window.history.replaceState) {
+                    const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    window.history.replaceState({path:cleanUrl}, '', cleanUrl);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

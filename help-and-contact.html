@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Contact - Academic Supervision System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background-color: #f9fafb; 
+        }
+        .content-prose h2 { 
+            margin-top: 1.5em; 
+            margin-bottom: 1em; 
+            font-size: 1.75rem; /* Increased size for section titles */
+            font-weight: 600; 
+            border-bottom: 2px solid #e5e7eb; /* Light border under titles */
+            padding-bottom: 0.5rem;
+        }
+        .content-prose h3 { 
+            margin-top: 1.5em; /* More space above FAQ questions */
+            margin-bottom: 0.5em; 
+            font-size: 1.25rem; 
+            font-weight: 600; 
+        }
+        .content-prose p { 
+            margin-bottom: 1em; 
+            line-height: 1.7; /* Improved readability */
+            color: #4b5563; /* Slightly softer text color */
+        }
+        .content-prose ul { 
+            list-style-type: disc; 
+            margin-left: 1.5em; 
+            margin-bottom: 1em; 
+            color: #4b5563;
+        }
+        .faq-item {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .faq-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .faq-question {
+            width: 100%;
+            text-align: left;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: none; /* Remove button border */
+            background: none; /* Remove button background */
+        }
+        .faq-question h3 {
+            margin-top: 0; /* Reset margin for h3 inside button */
+            margin-bottom: 0;
+            font-size: 1.125rem; /* Slightly smaller for FAQ question */
+            color: #1f2937; /* Darker color for question */
+        }
+        .faq-answer {
+            padding: 0 1.5rem 1rem;
+            display: none; /* Hidden by default */
+            border-top: 1px solid #f3f4f6; /* Light separator */
+        }
+        .faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+        .contact-form input, .contact-form textarea {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: #2563eb; /* Blue-600 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25); /* Blue-600 with opacity */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="login.html" class="flex items-center">
+                <i class="fas fa-graduation-cap text-3xl text-blue-600 mr-3"></i>
+                <h1 class="text-2xl font-bold text-gray-800">Academic Supervision System</h1>
+            </a>
+            <nav>
+                <a href="login.html" class="text-gray-600 hover:text-blue-600 mx-2 sm:mx-3">Login</a>
+                <a href="terms-of-service.html" class="text-gray-600 hover:text-blue-600 mx-2 sm:mx-3">Terms</a>
+                <a href="privacy-policy.html" class="text-gray-600 hover:text-blue-600 mx-2 sm:mx-3">Privacy</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg max-w-4xl mx-auto content-prose">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">Help & Contact</h1>
+
+            <section id="help">
+                <h2 class="text-2xl md:text-3xl">Frequently Asked Questions (FAQ)</h2>
+                
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1">
+                        <h3>How do I reset my password?</h3>
+                        <i class="fas fa-chevron-down text-gray-500 transform transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer" id="faq-answer-1">
+                        <p>If you've forgotten your password, click on the "Forgot password?" link on the login page. You will receive an email with instructions to reset your password. For security reasons, password reset links expire after a short period (e.g., 1 hour or 24 hours). If you do not receive the email, please check your spam/junk folder or contact IT support.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2">
+                        <h3>How do I schedule a supervision meeting?</h3>
+                        <i class="fas fa-chevron-down text-gray-500 transform transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer" id="faq-answer-2">
+                        <p>Once logged into your respective dashboard (Student or Supervisor):</p>
+                        <ul>
+                            <li>Navigate to the "Meetings" section.</li>
+                            <li>Look for an option like "Schedule New Meeting" or a calendar interface.</li>
+                            <li>Select the desired date, time, and duration.</li>
+                            <li>Add participants (e.g., student or supervisor).</li>
+                            <li>Include a meeting title or agenda.</li>
+                            <li>Confirm the booking. All participants should receive a notification and a calendar invitation if the system is integrated with email/calendar services.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3">
+                        <h3>What file formats are accepted for thesis/document submissions?</h3>
+                        <i class="fas fa-chevron-down text-gray-500 transform transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer" id="faq-answer-3">
+                        <p>The system generally accepts common document formats such as:</p>
+                        <ul>
+                            <li>PDF (.pdf) - Often preferred for final submissions.</li>
+                            <li>Microsoft Word (.doc, .docx)</li>
+                        </ul>
+                        <p>For supporting files, other formats like spreadsheets (.xls, .xlsx), images (.jpg, .png), or archives (.zip) might be accepted. Always check the specific instructions on the submission page for any file type or size limitations.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4">
+                        <h3>How can I view feedback on my submissions?</h3>
+                        <i class="fas fa-chevron-down text-gray-500 transform transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer" id="faq-answer-4">
+                        <p>As a student, once your supervisor or a marker has reviewed your submission (e.g., thesis draft, ethics form):</p>
+                        <ul>
+                            <li>Navigate to the relevant section on your dashboard (e.g., "Thesis Submission History", "Ethics Submission History").</li>
+                            <li>Find the specific submission.</li>
+                            <li>There should be an option to "View Feedback", "See Comments", or a dedicated feedback section associated with the submission.</li>
+                            <li>Notifications may also alert you when new feedback is available.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5">
+                        <h3>What should I do if I encounter a technical issue?</h3>
+                        <i class="fas fa-chevron-down text-gray-500 transform transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer" id="faq-answer-5">
+                        <p>If you experience technical difficulties:</p>
+                        <ul>
+                            <li>Try clearing your browser's cache and cookies, or try a different web browser.</li>
+                            <li>Ensure your internet connection is stable.</li>
+                            <li>Check if there are any system status announcements or planned maintenance notifications.</li>
+                            <li>If the issue persists, please contact the IT Help Desk or the support channels listed in the "Contact Us" section below. Provide as much detail as possible, including screenshots of any error messages.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="mt-12">
+                <h2 class="text-2xl md:text-3xl">Contact Us</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Support Channels</h3>
+                        <p class="text-gray-600 mb-6">Our support team is available to assist with any questions or issues you may have with the Academic Supervision System.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-envelope text-blue-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-gray-800 font-medium">Email Support</p>
+                                    <a href="mailto:support@university.ac.nz" class="text-blue-600 hover:underline">support@university.ac.nz</a>
+                                    <p class="text-xs text-gray-500">Response within 24-48 business hours.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-phone text-blue-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-gray-800 font-medium">Phone Support (IT Help Desk)</p>
+                                    <p class="text-gray-600">+64 9 123 4567 (Ext: 8888)</p>
+                                    <p class="text-xs text-gray-500">Available Mon-Fri, 8:00 AM - 6:00 PM NZST.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-life-ring text-blue-600"></i> </div>
+                                <div class="ml-4">
+                                    <p class="text-gray-800 font-medium">Online Knowledge Base</p>
+                                    <a href="#" class="text-blue-600 hover:underline">Visit our Help Center & FAQs</a>
+                                    <p class="text-xs text-gray-500">Available 24/7 for self-help.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Send Us a Message</h3>
+                        <form id="contactForm">
+                            <div class="mb-4">
+                                <label for="contactName" class="block text-sm font-medium text-gray-700 mb-1">Your Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="contactName" name="contactName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="contactEmail" class="block text-sm font-medium text-gray-700 mb-1">Your Email Address <span class="text-red-500">*</span></label>
+                                <input type="email" id="contactEmail" name="contactEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="contactSubject" class="block text-sm font-medium text-gray-700 mb-1">Subject <span class="text-red-500">*</span></label>
+                                <input type="text" id="contactSubject" name="contactSubject" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2" required>
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label for="contactMessage" class="block text-sm font-medium text-gray-700 mb-1">Message <span class="text-red-500">*</span></label>
+                                <textarea id="contactMessage" name="contactMessage" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2" required></textarea>
+                            </div>
+                            
+                            <button type="submit" id="submitContactFormBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300">
+                                Send Message
+                            </button>
+                            <p id="contactFormStatus" class="text-sm mt-3 text-center"></p>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-4">
+                <a href="terms-of-service.html" class="text-gray-400 hover:text-white mx-2">Terms of Service</a>
+                <span class="text-gray-500">|</span>
+                <a href="privacy-policy.html" class="text-gray-400 hover:text-white mx-2">Privacy Policy</a>
+                <span class="text-gray-500">|</span>
+                <a href="help-and-contact.html" class="text-white font-semibold mx-2">Help & Contact</a>
+            </div>
+            <p class="text-gray-400 text-sm">&copy; <span id="currentYearHelp"></span> University Academic Supervision System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="./js/supabaseClient.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/script.js"></script>
+
+    <script>
+        document.getElementById('currentYearHelp').textContent = new Date().getFullYear();
+
+        // FAQ Accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(button => {
+            button.addEventListener('click', () => {
+                const answer = button.nextElementSibling;
+                const icon = button.querySelector('i.fas.fa-chevron-down');
+                const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+                button.setAttribute('aria-expanded', !isExpanded);
+                answer.style.display = isExpanded ? 'none' : 'block';
+                icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+        });
+
+        // Contact Form Submission
+        const contactForm = document.getElementById('contactForm');
+        const contactFormStatus = document.getElementById('contactFormStatus');
+        const submitContactFormBtn = document.getElementById('submitContactFormBtn');
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                contactFormStatus.textContent = 'Sending your message...';
+                contactFormStatus.className = 'text-sm mt-3 text-center text-blue-600';
+                submitContactFormBtn.disabled = true;
+                submitContactFormBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+
+                const name = document.getElementById('contactName').value;
+                const email = document.getElementById('contactEmail').value;
+                const subject = document.getElementById('contactSubject').value;
+                const message = document.getElementById('contactMessage').value;
+
+                // Basic client-side validation
+                if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
+                    contactFormStatus.textContent = 'Please fill in all required fields.';
+                    contactFormStatus.className = 'text-sm mt-3 text-center text-red-600';
+                    submitContactFormBtn.disabled = false;
+                    submitContactFormBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    return;
+                }
+
+                // Email validation regex (simple one)
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    contactFormStatus.textContent = 'Please enter a valid email address.';
+                    contactFormStatus.className = 'text-sm mt-3 text-center text-red-600';
+                    submitContactFormBtn.disabled = false;
+                    submitContactFormBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    return;
+                }
+                
+                try {
+                    // Ensure Supabase client is available
+                    const supabase = window.getSupabaseClient(); // From supabaseClient.js
+                    if (!supabase) {
+                        throw new Error('Supabase client is not available. Ensure supabaseClient.js is loaded.');
+                    }
+
+                    // Check if auth module and getCurrentUser are available
+                    let currentAuthUser = null;
+                    if (typeof window.getCurrentUser === 'function') {
+                        currentAuthUser = window.getCurrentUser(); // From auth.js
+                    }
+                    
+                    const submissionData = {
+                        name: name,
+                        email: email,
+                        subject: subject,
+                        message: message,
+                        user_id: currentAuthUser ? currentAuthUser.id : null, // Link to logged-in user if available
+                        // ip_address and user_agent would ideally be captured server-side if possible,
+                        // or you can omit them for simplicity from client-side.
+                    };
+
+                    const { data, error } = await supabase
+                        .from('contact_submissions')
+                        .insert([submissionData]);
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    console.log('Contact form submitted successfully:', data);
+                    contactFormStatus.textContent = 'Thank you! Your message has been sent successfully.';
+                    contactFormStatus.className = 'text-sm mt-3 text-center text-green-600';
+                    contactForm.reset();
+
+                } catch (error) {
+                    console.error('Error submitting contact form:', error);
+                    contactFormStatus.textContent = `Error: ${error.message || 'Could not send message. Please try again.'}`;
+                    contactFormStatus.className = 'text-sm mt-3 text-center text-red-600';
+                } finally {
+                    submitContactFormBtn.disabled = false;
+                    submitContactFormBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    setTimeout(() => {
+                        contactFormStatus.textContent = '';
+                    }, 7000); // Clear status message after 7 seconds
+                }
+            });
+        }
+
+        // Ensure auth module is initialized if needed for user_id
+        // This depends on whether you want to associate submissions with logged-in users automatically.
+        // If auth.js is already included and initializes on page load, this might not be strictly necessary here
+        // unless you need to ensure user data is available *before* form submission.
+        if (typeof window.initializeAuthModule === 'function') {
+            window.initializeAuthModule().catch(err => {
+                console.warn("Auth module initialization on help page failed (this might be okay if user is not logged in):", err.message);
+            });
+        } else {
+            console.warn("initializeAuthModule function not found. Ensure auth.js is loaded if you need to link submissions to logged-in users.");
+        }
+
+    </script>
+</body>
+</html>
